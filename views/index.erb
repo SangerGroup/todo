@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>Simple To Do</title>
+  </head>
+  <body>
+    <h1>Simple To Do list</h1>
+    <form method="post" action="/newtask">
+      <table>
+        <tr>
+          <td><label for="description">Title:</label></td>
+          <td><input type="text" name="description"></td>
+        </tr><tr>
+          <td><input type="submit"></td>
+          <% if user_message %>
+            <%= user_message %>
+          <% end %>
+        </tr>
+      </table>
+    </form>
+
+  </body>
+</html>
