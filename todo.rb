@@ -6,8 +6,12 @@ enable :sessions
 store = TaskStore.new('tasks.yml')
 
 get('/') do |*user_message|
-  @user_message = session[:message] if session[:message] # assign message
-  session[:message] = "" # clear message after being used
+  # prepare erb messages
+  @user_message = session[:message] if session[:message]
+  @overlong_description = session[:overlong_description] if
+    session[:overlong_description]
+  session[:message] = nil # clear message after being used
+  session[:overlong_description] = nil # ditto
   @tasks = store.all
   erb :index #, user_message => {:user_message => params[:user_message]}
 end
@@ -24,7 +28,10 @@ post('/newtask') do
     # Prepare error message
     @task.message << " " + "Not saved."
     session[:message] = @task.message # use session[:message] for user messages
+    session[:overlong_description] = @task.overlong_description if
+      @task.overlong_description
     @task.message = ""
+    @task.overlong_description = nil
   end
   redirect '/'
 end

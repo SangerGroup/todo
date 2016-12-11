@@ -24,14 +24,15 @@
       <table>
         <tr><th colspan=2>Add new task!</th></tr>
         <tr>
-          <td><label for="description">Describe task:</label></td>
-          <td><input type="text" name="description"></td>
+          <td width="15%"><label for="description">Describe task:</label></td>
+          <td width="85%"><input type="text" name="description" value="<%= @overlong_description %>" id="task_input_box"></td>
         </tr><tr>
           <td><input type="submit"></td>
         </tr><tr>
-          <td colspan=2><% if @user_message %>
-                <%= @user_message %>
-              <% end %>
+          <td colspan=2>
+            <% if @user_message %>
+              <%= @user_message %>
+            <% end %>
           </td></tr>
       </table>
     </form>

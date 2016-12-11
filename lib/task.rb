@@ -1,6 +1,6 @@
 class Task
   attr_accessor :id, :position, :description, :date_added, :date_due,
-    :categories, :message, :complete
+    :categories, :message, :complete, :overlong_description
 
   def initialize(store, params)
     @id = assign_id(store.ids)
@@ -29,8 +29,10 @@ class Task
     # Return error message if description is blank.
     return "Description cannot be blank." if description == ""
     # Return error message if description is too long.
-    return "Description was #{description.length} characters long; cannot exceed 140." if
-      description.length > 140
+    if description.length > 140
+      @overlong_description = description
+      return "Description was #{description.length} characters long; cannot exceed 140."
+    end
     # Otherwise "ok"
     return "ok"
   end

@@ -1,7 +1,16 @@
+table {
+  width: 100%;
+}
 table, td, th {
     border: 1px solid black;
     padding: 2px;
 }
+
 h1 {
   font-family: Tahoma, sans-serif;
+}
+
+#task_input_box {
+  width: 99%;
+  height: 40px;
 }
