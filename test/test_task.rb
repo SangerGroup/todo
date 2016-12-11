@@ -6,7 +6,8 @@ class TestTask < Minitest::Test
 
   def setup
     @store = TaskStore.new('tasks.yml')
-    @task = Task.new(@store)
+    params = {"description" => ""} # dummy data mimics user input
+    @task = Task.new(@store, params)
   end
 
   # New Task object has attributes: id, position, description, date added,
@@ -35,10 +36,12 @@ class TestTask < Minitest::Test
   end
 
   def test_check_description
-    # Ensure description is string
     # Return error message if description is blank.
+    assert_equal(@task.check_description(""),"Description cannot be blank.")
     # Return error message if description is too long.
+    assert_equal(@task.check_description("x" * 141), "Description was 141 characters long; cannot exceed 140.")
     # Otherwise return "ok"
+    assert_equal(@task.check_description("This is a test."), "ok")
   end
 
 end

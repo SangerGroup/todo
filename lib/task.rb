@@ -6,11 +6,10 @@ class Task
     @id = assign_id(store.ids)
     @complete = true # by default
     @message = ""
-    if check_description(params["description"]) == "ok"
-      @description = params["description"]
-    else
+    @description = params["description"]
+    unless check_description(@description) == "ok"
       # this outputs an error message for the user
-      @message << " " + check_description(params["description"])
+      @message << " " + check_description(@description)
       @complete = false
     end
     @position = ""
