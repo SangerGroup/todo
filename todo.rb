@@ -1,4 +1,7 @@
+require 'bundler'
+require 'bundler/setup'
 require 'sinatra'
+
 require './lib/task'
 require './lib/task_store'
 enable :sessions
@@ -19,14 +22,13 @@ end
 post('/newtask') do
   @task = Task.new(store, params)
   # decide whether to save & prepare user messages
-  if @task.complete == true
+  if @task.complete == true # task is complete!
     @task.message << " " + "Task saved!"
     session[:message] = @task.message # use session[:message] for user messages
     @task.message = ""
     store.save(@task)
   else
-    # Prepare error message
-    @task.message << " " + "Not saved."
+    @task.message << " " + "Not saved." # task incomplete
     session[:message] = @task.message # use session[:message] for user messages
     session[:overlong_description] = @task.overlong_description if
       @task.overlong_description

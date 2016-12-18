@@ -2,10 +2,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
+    minitest (5.9.0)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
-    rspec-core (3.5.2)
+    rack-test (0.6.3)
+      rack (>= 1.0)
+    rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -25,10 +28,12 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  minitest (= 5.9.0)
+  rack-test
   rspec-core
   rspec-expectations
   rspec-mocks
   sinatra
 
 BUNDLED WITH
-   1.12.5
+   1.13.6
