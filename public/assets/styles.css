@@ -1,9 +1,30 @@
 table {
   width: 100%;
+  border: lightblue solid 2px;
+  max-width: 800px;
 }
-table, td, th {
-    border: 1px solid black;
-    padding: 2px;
+
+.thead {
+  background-color: lightyellow;
+}
+
+.task {
+  width: 50%;
+  padding-left: 2px;
+}
+
+.rightmost {
+  border-right: none;
+}
+
+td {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-top: 0px;
+  border-bottom: 0px;
+  border-right: 1px darkgrey solid;
+  padding: 1px;
+  margin: 0px;
 }
 
 h1 {

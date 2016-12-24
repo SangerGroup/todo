@@ -9,18 +9,30 @@
     <h1>Simple To Do List</h1>
     <form method="post" action="/newtask">
       <table>
-        <thead>
-          <th>Task</th>
-          <th>Date added</th>
-          <th>Date due</th>
-          <th>Categories</th>
+        <thead class="thead">
+          <th>&nbsp;</th>
+          <th class="task">Task</th>
+          <th class="date_added">Date added</th>
+          <th class="date_due">Date due</th>
+          <th class="categories">Categories</th>
         </thead>
         <tbody>
           <% @tasks.each do |task| %>
-            <tr><td><%= task.description %></td></tr>
+            <tr>
+              <td>
+                <form>
+                  <label for="task_checkbox"><input type="checkbox" name="task_checkbox"></label>
+                </form>
+              </td>
+              <td class="task"><%= task.description %></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td class="rightmost">&nbsp;</td>
+            </tr>
           <% end %>
         </tbody>
       </table>
+      <br />
       <table>
         <tr><th colspan=2>Add new task!</th></tr>
         <tr>
