@@ -1,11 +1,19 @@
+body {
+  font-family: Verdana, Geneva, sans-serif;
+}
+
 table {
   width: 100%;
   border: lightblue solid 2px;
-  max-width: 800px;
+  max-width: 1200px;
 }
 
 .thead {
   background-color: lightyellow;
+}
+
+tr {
+  border-bottom: 1px darkgrey solid;
 }
 
 .task {
@@ -13,22 +21,37 @@ table {
   padding-left: 2px;
 }
 
+.date_added {
+  width: 10%;
+}
+
+.date_due {
+  width: 10%;
+}
+
+.categories {
+  width: 30%;
+}
+
 .rightmost {
   border-right: none;
 }
 
+.colored_row {
+  background-color: lightgrey;
+}
+
 td {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  border-top: 0px;
-  border-bottom: 0px;
-  border-right: 1px darkgrey solid;
-  padding: 1px;
   margin: 0px;
+  border: 0px;
+  padding: 2px;
+}
+
+#bottommost {
+  border-bottom: 0px;
 }
 
 h1 {
-  font-family: Tahoma, sans-serif;
 }
 
 #task_input_box {

@@ -19,6 +19,10 @@ get('/') do |*user_message|
   erb :index #, user_message => {:user_message => params[:user_message]}
 end
 
+get('/index.html')
+  redirect '/'
+end
+
 post('/newtask') do
   @task = Task.new(store, params)
   # decide whether to save & prepare user messages

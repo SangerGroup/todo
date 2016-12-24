@@ -7,7 +7,6 @@
   </head>
   <body>
     <h1>Simple To Do List</h1>
-    <form method="post" action="/newtask">
       <table>
         <thead class="thead">
           <th>&nbsp;</th>
@@ -17,27 +16,36 @@
           <th class="categories">Categories</th>
         </thead>
         <tbody>
+          <% row_counter = 0 %>
           <% @tasks.each do |task| %>
-            <tr>
-              <td>
+            <% row_counter += 1 %>
+            <tr<%= " class='colored_row'" if row_counter.even? %>>
+              <td<%= " id='bottommost'" if row_counter == @tasks.length %>>
                 <form>
                   <label for="task_checkbox"><input type="checkbox" name="task_checkbox"></label>
                 </form>
               </td>
-              <td class="task"><%= task.description %></td>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td class="rightmost">&nbsp;</td>
+              <td class="task"<%= " id='bottommost'" if row_counter == @tasks.length %>><%= task.description %></td>
+              <td<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
+              <td<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
+              <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
             </tr>
           <% end %>
         </tbody>
       </table>
       <br />
       <table>
+        <form method="post" action="/newtask">
         <tr><th colspan=2>Add new task!</th></tr>
         <tr>
           <td width="15%"><label for="description">Describe task:</label></td>
           <td width="85%"><input type="text" name="description" value="<%= @overlong_description %>" id="task_input_box"></td>
+        </tr><tr>
+          <td>Date due:</td>
+          <td><input type="text" name="date_due" placeholder="optional" id="task_input_box"></td>
+        </tr><tr>
+          <td>Categories:</td>
+          <td><input type="text" name="categories" value="" placeholder="Separate by commas: design, debugging, requirements writing" id="task_input_box"></td>
         </tr><tr>
           <td><input type="submit"></td>
         </tr><tr>
