@@ -16,7 +16,11 @@ get('/') do |*user_message|
   session[:message] = nil # clear message after being used
   session[:overlong_description] = nil # ditto
   @tasks = store.all
-  erb :index #, user_message => {:user_message => params[:user_message]}
+  erb :"index.html" #, user_message => {:user_message => params[:user_message]}
+end
+
+get('/index.html') do
+  redirect '/'
 end
 
 post('/newtask') do
