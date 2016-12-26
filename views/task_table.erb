@@ -1,4 +1,4 @@
-<% params["pg_type"] = @pg_type %>
+<!-- prepare variables for this table -->
 <% if @pg_type == 'index' %>
   <% hover_on_checkbox = "/assets/images/nxt-checkbox-checked-ok-th.png" %>
   <% hover_off_checkbox =     "/assets/images/nxt-checkbox-unchecked-th.png" %>
@@ -8,10 +8,12 @@
   <% hover_off_checkbox =     "/assets/images/nxt-checkbox-checked-ok-th.png" %>
   <% checkbox_action = "/uncheck_completed/" %>
 <% end %>
+
 <!-- page header -->
 <table class="header">
   <tr><td><a href="/">home</a></td><td><a href="/completed">completed</td></tr>
 </table>
+
 <!-- This table lists all tasks in a certain category (or in the main view).
 Its functionality is identical across various categories, with a few changes. -->
 <table>
@@ -32,7 +34,7 @@ Its functionality is identical across various categories, with a few changes. --
           <form method="post" action="<%= checkbox_action %><%= task.id %>">
             <label for="task_checkbox"><input class="checkbox" type="image" name="task_checkbox" src="<%= hover_off_checkbox %>"
               onmouseover="this.src='<%= hover_on_checkbox %>';" onmouseout="this.src='<%= hover_off_checkbox %>';">
-              <input type="hidden" name="pg_type" value="<% @pg_type %>"></label>
+              <input type="hidden" name="pg_type" value="<%= @pg_type %>"></label>
           </form>
         </td>
         <td class="task"<%= " id='bottommost'" if row_counter == @tasks.length %>><%= task.description %></td>
@@ -43,7 +45,7 @@ Its functionality is identical across various categories, with a few changes. --
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
         <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <form method="post" action="/delete/<%= task.id %>">
-            <label for="delete_button"><input type="hidden" name="pg_type" value="<% @pg_type %>"><button type="submit" name="delete">Delete</button></label>
+            <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type %>"><button type="submit" name="delete">Delete</button></label>
           </form>
         </td>
       </tr>

@@ -35,31 +35,18 @@ end
 
 post('/check_completed/:id') do
   store.move_to_completed(params[:id].to_i)
-  p "request.path  = #{request.path}"
-  p "request.accept  = #{request.accept}"
-  p "request.script_name  = #{request.script_name}"
-  p "request.path_info  = #{request.path_info}"
-  p "request.host  = #{request.host}"
-  p "request.url  = #{request.url}"
-  p params
-  puts "YOOOOOOOO!!!!! page type = #{params['pg_type']}"
+  redirect "/" if params[:pg_type] == "index"
   redirect "/#{params[:pg_type]}"
 end
 
 post('/uncheck_completed/:id') do
   store.move_to_index(params[:id].to_i)
-  p "request.script_name  = #{request.script_name}"
-  puts "Params are #{params}"
-  puts "YOOOOOOOO!!!!! page type = #{params[:pg_type]}"
   redirect "/#{params[:pg_type]}"
 end
 
 post('/delete/:id') do
   store.delete(params[:id].to_i)
   session[:message] << " " + "Deleted task!"
-  p params
-  puts "params[:id] = #{params[:id]}"
-  puts "YOOOOOOOO!!!!! page type = #{params[:pg_type]}"
   redirect "/" if params[:pg_type] == "index"
   redirect params[:pg_type]
 end
