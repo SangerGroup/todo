@@ -8,29 +8,35 @@ table {
   max-width: 1200px;
 }
 
+.header {
+  width: auto;
+  border: none;
+}
+
 .thead {
   background-color: lightyellow;
 }
 
-tr {
-  border-bottom: 1px darkgrey solid;
-}
-
 .task {
   width: 50%;
-  padding-left: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .date_added {
-  width: 10%;
+  width: 12%;
 }
 
 .date_due {
-  width: 10%;
+  width: 12%;
 }
 
 .categories {
-  width: 30%;
+  width: 26%;
+}
+
+.delete {
+  width: 4%;
 }
 
 .rightmost {
@@ -51,10 +57,56 @@ td {
   border-bottom: 0px;
 }
 
-h1 {
+.checkbox {
+  height: 15px;
+  width: 15px;
 }
 
-#task_input_box {
-  width: 99%;
-  height: 40px;
+
+.task_input_box {
+  width: 75%;
+  height: 15px;
+  padding-bottom: 25px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.other_input_box {
+  width: 50%;
+  max-width: 400px;
+}
+
+input:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+
+button {
+     background:none!important;
+     border:none;
+     padding:0!important;
+     font: inherit;
+     cursor: pointer;
+     font-size: .85em;
+}
+
+button:hover {
+  color: red;
+}
+
+.input-button {
+  font-size: 1.1em;
+  background-color: green;
+  color:white;
+  border: 1px grey solid;
+  border-radius: 4px;
+}
+
+.user_message {
+  color: red;
+  display: inline;
+}
+
+.new_task_label {
+  text-align: right;
+  width: 10%;
 }

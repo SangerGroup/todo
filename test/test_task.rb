@@ -19,7 +19,7 @@ class TestTask < Minitest::Test
     refute_nil(@task.date_added)
     refute_nil(@task.date_due)
     refute_nil(@task.categories)
-    refute_nil(@task.complete)
+    refute_nil(@task.ok)
   end
 
   # given a set of ids (check they're all numerical), determine the highest

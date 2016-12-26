@@ -1,4 +1,5 @@
 require 'yaml/store'
+require 'yaml/dbm'
 
 class TaskStore
 
@@ -25,6 +26,27 @@ class TaskStore
   def ids
     @store.transaction do
       @store.roots
+    end
+  end
+
+  # delete item entirely
+  def delete(id)
+    @store.transaction do
+      @store.delete(id)
+    end
+  end
+
+  # add task to 'completed'
+  def move_to_completed(id)
+    @store.transaction do
+      @store[id].categories["completed"] = true
+    end
+  end
+
+  # remove task from 'completed'
+  def move_to_index(id)
+    @store.transaction do
+      @store[id].categories["completed"] = false
     end
   end
 

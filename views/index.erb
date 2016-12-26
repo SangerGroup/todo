@@ -7,53 +7,31 @@
   </head>
   <body>
     <h1>Simple To Do List</h1>
-      <table>
-        <thead class="thead">
-          <th>&nbsp;</th>
-          <th class="task">Task</th>
-          <th class="date_added">Date added</th>
-          <th class="date_due">Date due</th>
-          <th class="categories">Categories</th>
-        </thead>
-        <tbody>
-          <% row_counter = 0 %>
-          <% @tasks.each do |task| %>
-            <% row_counter += 1 %>
-            <tr<%= " class='colored_row'" if row_counter.even? %>>
-              <td<%= " id='bottommost'" if row_counter == @tasks.length %>>
-                <form>
-                  <label for="task_checkbox"><input type="checkbox" name="task_checkbox"></label>
-                </form>
-              </td>
-              <td class="task"<%= " id='bottommost'" if row_counter == @tasks.length %>><%= task.description %></td>
-              <td<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
-              <td<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
-              <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+      <%= erb :task_table %>
       <br />
       <table>
         <form method="post" action="/newtask">
-        <tr><th colspan=2>Add new task!</th></tr>
+        <tr><td>&nbsp;</td><td style="align:left;">Add new task!</td></tr>
         <tr>
-          <td width="15%"><label for="description">Describe task:</label></td>
-          <td width="85%"><input type="text" name="description" value="<%= @overlong_description %>" id="task_input_box"></td>
+          <td class="new_task_label"><label for="description">Describe task:</label></td>
+          <td width="90%"><input type="text" name="description" value="<%= @overlong_description %>" class="task_input_box"></td>
         </tr><tr>
-          <td>Date due:</td>
-          <td><input type="text" name="date_due" placeholder="optional" id="task_input_box"></td>
+          <td class="new_task_label">Date due:</td>
+          <td><input type="text" name="date_due" placeholder="Optional: format mm/dd or yyyy/mm/dd" class="other_input_box"></td>
         </tr><tr>
-          <td>Categories:</td>
-          <td><input type="text" name="categories" value="" placeholder="Separate by commas: design, debugging, requirements writing" id="task_input_box"></td>
+          <td class="new_task_label">Categories:</td>
+          <td><input type="text" name="categories" value="" placeholder="Separate by commas: design, debugging, requirements writing" class="other_input_box"></td>
         </tr><tr>
-          <td><input type="submit"></td>
-        </tr><tr>
-          <td colspan=2>
-            <% if @user_message %>
-              <%= @user_message %>
-            <% end %>
-          </td></tr>
+          <td>&nbsp;</td>
+          <td>
+            <input type="submit" class="input-button">&nbsp;
+            <div class="user_message">
+              <% if @user_message %>
+                <%= @user_message %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
       </table>
     </form>
 

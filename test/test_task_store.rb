@@ -15,4 +15,9 @@ class TestTaskStore < Minitest::Test
 
   end
 
+  # tests that a task was successfully deleted
+  def test_delete
+
+  end
+
 end
