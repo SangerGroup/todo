@@ -1,6 +1,7 @@
 require 'bundler'
 require 'bundler/setup'
 require 'sinatra'
+require 'yaml'
 
 require './lib/task'
 require './lib/task_store'
