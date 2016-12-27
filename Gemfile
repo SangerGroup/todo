@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'ruby'
+gem ruby '2.2.6'
 gem 'rspec-core'
 gem 'rspec-expectations'
 gem 'rspec-mocks'
