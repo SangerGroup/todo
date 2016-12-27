@@ -49,7 +49,11 @@ Its functionality is identical across various categories, with a few changes. --
           <form method="post" action="<%= checkbox_action %><%= task.id %>">
             <label for="task_checkbox"><input class="checkbox" type="image" name="task_checkbox" src="<%= hover_off_checkbox %>"
               onmouseover="this.src='<%= hover_on_checkbox %>';" onmouseout="this.src='<%= hover_off_checkbox %>';">
-              <input type="hidden" name="pg_type" value="<%= @pg_type %>"></label>
+              <input type="hidden" name="pg_type" value="<%= @pg_type %>">
+              <% if @pg_type == "category" %>
+                <input type="hidden" name="cat_page" value="<%= @cat_page %>">
+              <% end %>
+            </label>
           </form>
 
         </td>
@@ -67,14 +71,18 @@ Its functionality is identical across various categories, with a few changes. --
         <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <% unless @pg_type == "deleted" %>
             <form method="post" action="/delete/<%= task.id %>">
-              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type %>"><button type="submit" name="delete">Delete</button></label>
+              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type %>">
+              <% if @pg_type == "category" %>
+                <input type="hidden" name="cat_page" value="<%= @cat_page %>">
+              <% end %>
+              <button type="submit" name="delete">Delete</button></label>
             </form>
           <% else %>
             <form method="post" action="/undelete/<%= task.id %>">
-              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type %>"><button type="submit" name="delete">Undelete</button></label>
+              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type.tr(" ", "%20") %>"><button type="submit" name="delete">Undelete</button></label>
             </form>
             <form method="post" action="/perma_delete/<%= task.id %>">
-              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type %>"><button type="submit" name="delete">Delete!!</button></label>
+              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type.tr(" ", "%20") %>"><button type="submit" name="delete">Delete!!</button></label>
             </form>
           <% end %>
         </td>

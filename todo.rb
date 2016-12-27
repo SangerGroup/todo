@@ -65,11 +65,13 @@ end
 post('/check_completed/:id') do
   store.move_to_completed(params[:id].to_i)
   redirect "/" if params[:pg_type] == "index"
+  redirect "/category/#{params[:cat_page]}" if params[:pg_type] == "category"
   redirect "/#{params[:pg_type]}"
 end
 
 post('/uncheck_completed/:id') do
   store.move_to_index(params[:id].to_i)
+  redirect "/category/#{params[:cat_page]}" if params[:pg_type] == "category"
   redirect "/#{params[:pg_type]}"
 end
 
@@ -77,6 +79,7 @@ post('/delete/:id') do
   store.delete_task(params[:id].to_i)
   session[:message] << " " + "Deleted task!"
   redirect "/" if params[:pg_type] == "index"
+  redirect "/category/#{params[:cat_page]}" if params[:pg_type] == "category"
   redirect params[:pg_type]
 end
 
@@ -117,17 +120,21 @@ post('/newtask') do
 end
 
 get('/category/:cat_page') do
-  @cat_page = params['cat_page']
-  @pg_type = 'category'
+  # prepare erb messages
+  @user_message = session[:message] if session[:message]
+  session[:message] = "" # clear message after being used
+  @cat_page = params['cat_page'] # name of page to fetch
+  @pg_type = 'category' # so task_table knows page type
+  puts "CAT PAGE = #{@cat_page}, PAGE TYPE = #{@pg_type}"
   @tasks = store.all
   # don't show completed or deleted
   @tasks.reject! do |task|
     (task.categories["completed"] == true || task.categories["deleted"] == true)
   end
-  @display_categories = compile_categories(@tasks) # compile before tossing some
+  # prepare complete list of categories to show in list
+  @display_categories = compile_categories(@tasks)
   # show only tasks that include @cat_page as a category
   @tasks.select! { |task| task.categories.has_key?(@cat_page) }
-  # prepare complete list of categories to show in list
   if @display_categories.include?(@cat_page)
     erb :categories
   else

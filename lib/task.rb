@@ -86,7 +86,7 @@ class Task
   def categories_parse(categories)
     categories = categories.split(',')
     # remove leading and trailing whitespace & lowercase everything
-    categories.map! { |cat| cat.strip.downcase}
+    categories.map! { |cat| cat.strip.downcase }
     # iterate through prepared array and save to @categories
     this_task_categories = {}
     categories.each do |cat|
