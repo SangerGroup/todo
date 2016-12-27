@@ -6,7 +6,7 @@
     <td><a href="/deleted">deleted</td>
     <td>
       <div class="dropdown">
-        <button class="dropbtn">categories</button>
+        <button class="dropbtn">tags</button>
         <div class="dropdown-content">
           <% @display_categories.each do |cat| %>
             <a href="/category/<%= cat %>"><%= cat.split(" ").map(&:capitalize).join(' ') %></a>
@@ -25,7 +25,7 @@ Its functionality is identical across various categories, with a few changes. --
     <th class="task">Task</th>
     <th class="date_added">Date added</th>
     <th class="date_due">Date due</th>
-    <th class="categories">Categories</th>
+    <th class="categories">Tags</th>
     <th class="delete"></th>
   </thead>
   <tbody>
@@ -65,7 +65,9 @@ Its functionality is identical across various categories, with a few changes. --
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <% task.categories.each do |cat, value| %>
             <% next if (cat == "completed" || cat == "deleted" || cat == "nil") %>
-            <a href="/category/<%= cat %>"><%= cat %></a>
+            <a href="/category/<%= cat %>"><%= cat %></a><% unless cat == task.categories.keys.last %>
+              <%= "|" %>
+            <% end %>
           <% end %>
         </td>
         <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>

@@ -66,8 +66,12 @@ table {
 }
 
 .task_table_tds {
-  padding: 4px 2px 4px 2px;
-  vertical-align: top;
+  padding: 7px 4px 3px 4px;
+}
+
+.checkbox {
+  height: 16px;
+  width: 16px;
 }
 
 .task {
@@ -108,11 +112,6 @@ td {
 
 #bottommost {
   border-bottom: 0px;
-}
-
-.checkbox {
-  height: 15px;
-  width: 15px;
 }
 
 .new_task_label {

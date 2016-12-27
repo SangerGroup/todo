@@ -9,59 +9,6 @@ enable :sessions
 
 store = TaskStore.new('tasks.yml')
 
-get('/') do |*user_message|
-  # prepare erb messages
-  @user_message = session[:message] if session[:message]
-  @overlong_description = session[:overlong_description] if
-    session[:overlong_description]
-  @bad_categories = session[:bad_categories] if
-    session[:bad_categories]
-  session[:message] = "" # clear message after being used
-  session[:overlong_description] = "" # ditto
-  session[:bad_categories] = "" # ditto
-  @tasks = store.all
-  @display_categories = compile_categories(@tasks)
-  puts "DISPLAY CATEGORIES ARE #{@display_categories}"
-  @tasks.reject! do |task|
-    (task.categories["completed"] == true ||
-    task.categories["deleted"] == true)
-  end
-  # prepare complete list of categories to show in list
-  @pg_type = 'index' # for use formatting task_table
-  erb :index #, user_message => {:user_message => params[:user_message]}
-end
-
-get('/index.html') do
-  redirect '/'
-end
-
-get('/completed') do
-  # prepare erb messages
-  @user_message = session[:message] if session[:message]
-  session[:message] = "" # clear message after being used
-  @tasks = store.all
-  # prepare complete list of categories to show in list
-  @display_categories = compile_categories(@tasks)
-  @tasks.reject! do |task|
-    (task.categories["completed"] == false ||
-    task.categories["deleted"] == true)
-  end
-  @pg_type = 'completed'
-  erb :completed
-end
-
-get('/deleted') do
-  # prepare erb messages
-  @user_message = session[:message] if session[:message]
-  session[:message] = "" # clear message after being used
-  @tasks = store.all
-  # prepare complete list of categories to show in list
-  @display_categories = compile_categories(@tasks) # compile before tossing some
-  @tasks.select! {|task| task.categories["deleted"] == true}
-  @pg_type = 'deleted'
-  erb :deleted
-end
-
 post('/check_completed/:id') do
   store.move_to_completed(params[:id].to_i)
   redirect "/" if params[:pg_type] == "index"
@@ -117,6 +64,58 @@ post('/newtask') do
     @task.bad_categories = nil
   end
   redirect '/'
+end
+
+get('/') do |*user_message|
+  # prepare erb messages
+  @user_message = session[:message] if session[:message]
+  @overlong_description = session[:overlong_description] if
+    session[:overlong_description]
+  @bad_categories = session[:bad_categories] if
+    session[:bad_categories]
+  session[:message] = "" # clear message after being used
+  session[:overlong_description] = "" # ditto
+  session[:bad_categories] = "" # ditto
+  @tasks = store.all
+  @display_categories = compile_categories(@tasks)
+  @tasks.reject! do |task|
+    (task.categories["completed"] == true ||
+    task.categories["deleted"] == true)
+  end
+  # prepare complete list of categories to show in list
+  @pg_type = 'index' # for use formatting task_table
+  erb :index #, user_message => {:user_message => params[:user_message]}
+end
+
+get('/index.html') do
+  redirect '/'
+end
+
+get('/completed') do
+  # prepare erb messages
+  @user_message = session[:message] if session[:message]
+  session[:message] = "" # clear message after being used
+  @tasks = store.all
+  # prepare complete list of categories to show in list
+  @display_categories = compile_categories(@tasks)
+  @tasks.reject! do |task|
+    (task.categories["completed"] == false ||
+    task.categories["deleted"] == true)
+  end
+  @pg_type = 'completed'
+  erb :completed
+end
+
+get('/deleted') do
+  # prepare erb messages
+  @user_message = session[:message] if session[:message]
+  session[:message] = "" # clear message after being used
+  @tasks = store.all
+  # prepare complete list of categories to show in list
+  @display_categories = compile_categories(@tasks) # compile before tossing some
+  @tasks.select! {|task| task.categories["deleted"] == true}
+  @pg_type = 'deleted'
+  erb :deleted
 end
 
 get('/category/:cat_page') do
