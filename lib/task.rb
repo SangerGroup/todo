@@ -29,7 +29,9 @@ class Task
     end
     @categories = {"completed" => false, "deleted" => false}
     if categories_validate(params["categories"]) == true
-      # TO DO: @categories.merge(categories_parse(params["categories"]))
+      @categories.merge!(categories_parse(params["categories"]))
+      puts "CATEGORIES ="
+      p @categories
     else
       @ok = false
       @bad_categories = params["categories"] # so this appears prefilled
@@ -82,6 +84,15 @@ class Task
   end
 
   def categories_parse(categories)
+    categories = categories.split(',')
+    # remove leading and trailing whitespace & lowercase everything
+    categories.map! { |cat| cat.strip.downcase}
+    # iterate through prepared array and save to @categories
+    this_task_categories = {}
+    categories.each do |cat|
+      this_task_categories[cat] = true
+    end
+    return this_task_categories
   end
 
 end

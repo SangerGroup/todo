@@ -4,6 +4,16 @@
     <td><a href="/">home</a></td>
     <td><a href="/completed">completed</td>
     <td><a href="/deleted">deleted</td>
+    <td>
+      <div class="dropdown">
+        <button class="dropbtn">categories</button>
+        <div class="dropdown-content">
+          <% @display_categories.each do |cat| %>
+            <a href="/category/<%= cat %>"><%= cat.split(" ").map(&:capitalize).join(' ') %></a>
+          <% end %>
+        </div>
+      </div>
+    </td>
   </tr>
 </table>
 
@@ -48,7 +58,12 @@ Its functionality is identical across various categories, with a few changes. --
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>><%= added %></td>
         <% due = task.date_due.strftime('%F') unless task.date_due == "" %>
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>><%= due if task.date_due != "" %></td>
-        <td<%= " id='bottommost'" if row_counter == @tasks.length %>>&nbsp;</td>
+        <td<%= " id='bottommost'" if row_counter == @tasks.length %>>
+          <% task.categories.each do |cat, value| %>
+            <% next if (cat == "completed" || cat == "deleted" || cat == "nil") %>
+            <a href="/category/<%= cat %>"><%= cat %></a>
+          <% end %>
+        </td>
         <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <% unless @pg_type == "deleted" %>
             <form method="post" action="/delete/<%= task.id %>">

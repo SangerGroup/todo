@@ -4,6 +4,7 @@ require 'sinatra'
 
 require './lib/task'
 require './lib/task_store'
+require './lib/todo_helpers'
 enable :sessions
 
 store = TaskStore.new('tasks.yml')
@@ -18,10 +19,14 @@ get('/') do |*user_message|
   session[:message] = "" # clear message after being used
   session[:overlong_description] = "" # ditto
   session[:bad_categories] = "" # ditto
-  @tasks = store.all.reject do |task|
+  @tasks = store.all
+  @display_categories = compile_categories(@tasks)
+  puts "DISPLAY CATEGORIES ARE #{@display_categories}"
+  @tasks.reject! do |task|
     (task.categories["completed"] == true ||
     task.categories["deleted"] == true)
   end
+  # prepare complete list of categories to show in list
   @pg_type = 'index' # for use formatting task_table
   erb :index #, user_message => {:user_message => params[:user_message]}
 end
@@ -34,7 +39,10 @@ get('/completed') do
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
-  @tasks = store.all.reject do |task|
+  @tasks = store.all
+  # prepare complete list of categories to show in list
+  @display_categories = compile_categories(@tasks)
+  @tasks.reject! do |task|
     (task.categories["completed"] == false ||
     task.categories["deleted"] == true)
   end
@@ -46,7 +54,10 @@ get('/deleted') do
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
-  @tasks = store.all.select {|task| task.categories["deleted"] == true}
+  @tasks = store.all
+  # prepare complete list of categories to show in list
+  @display_categories = compile_categories(@tasks) # compile before tossing some
+  @tasks.select! {|task| task.categories["deleted"] == true}
   @pg_type = 'deleted'
   erb :deleted
 end
@@ -103,4 +114,23 @@ post('/newtask') do
     @task.bad_categories = nil
   end
   redirect '/'
+end
+
+get('/category/:cat_page') do
+  @cat_page = params['cat_page']
+  @pg_type = 'category'
+  @tasks = store.all
+  # don't show completed or deleted
+  @tasks.reject! do |task|
+    (task.categories["completed"] == true || task.categories["deleted"] == true)
+  end
+  @display_categories = compile_categories(@tasks) # compile before tossing some
+  # show only tasks that include @cat_page as a category
+  @tasks.select! { |task| task.categories.has_key?(@cat_page) }
+  # prepare complete list of categories to show in list
+  if @display_categories.include?(@cat_page)
+    erb :categories
+  else
+    redirect '/'
+  end
 end
