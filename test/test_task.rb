@@ -6,7 +6,7 @@ class TestTask < Minitest::Test
 
   def setup
     @store = TaskStore.new('tasks.yml')
-    params = {"description" => ""} # dummy data mimics user input
+    params = {"description" => "", "categories"=>""} # dummy data mimics user input
     @task = Task.new(@store, params)
   end
 

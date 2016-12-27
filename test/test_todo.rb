@@ -29,7 +29,8 @@ class ToDoTest < Minitest::Test
   end
 
   def test_post_newtask
-    post('/newtask', params = {"description"=>"Test task 123"})
+    post('/newtask', params = {"description"=>"Test task 123",
+      "categories"=>""})
     # Test that "saved" message for user is in returned page
     # NOT DONE THIS DOESN'T WORK
     # assert last_response.body.include?("Task saved") # COMMENTED OUT FOR NOW

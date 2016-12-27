@@ -8,13 +8,22 @@ table {
   max-width: 1200px;
 }
 
+#add_new_task {
+  max-width: 400px;
+}
+
 .header {
   width: auto;
   border: none;
 }
 
 .thead {
-  background-color: lightyellow;
+  background-color: #fcffc1;
+}
+
+.task_table_tds {
+  padding: 4px 2px 4px 2px;
+  vertical-align: top;
 }
 
 .task {
@@ -44,7 +53,7 @@ table {
 }
 
 .colored_row {
-  background-color: lightgrey;
+  background-color: #d4f4f9;
 }
 
 td {
@@ -62,21 +71,26 @@ td {
   width: 15px;
 }
 
+.new_task_label {
+  text-align: right;
+  width: 10%;
+}
 
-.task_input_box {
-  width: 75%;
-  height: 15px;
-  padding-bottom: 25px;
-  word-wrap: break-word;
-  word-break: break-all;
+textarea {
+  width: 275px;
+  font-family: Verdana, Geneva, sans-serif;
 }
 
 .other_input_box {
-  width: 50%;
-  max-width: 400px;
+  width: 275px;
+  font-family: Verdana, Geneva, sans-serif;
 }
 
 input:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+
+textarea:focus::-webkit-input-placeholder {
   color: transparent;
 }
 
@@ -104,9 +118,4 @@ button:hover {
 .user_message {
   color: red;
   display: inline;
-}
-
-.new_task_label {
-  text-align: right;
-  width: 10%;
 }

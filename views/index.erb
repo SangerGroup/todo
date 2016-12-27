@@ -9,18 +9,22 @@
     <h1>Simple To Do List</h1>
       <%= erb :task_table %>
       <br />
-      <table>
-        <form method="post" action="/newtask">
+      <table id="add_new_task">
+        <form method="post" action="/newtask" id="description">
         <tr><td>&nbsp;</td><td style="align:left;">Add new task!</td></tr>
         <tr>
           <td class="new_task_label"><label for="description">Describe task:</label></td>
-          <td width="90%"><input type="text" name="description" value="<%= @overlong_description %>" class="task_input_box"></td>
+          <td width="90%">
+            <textarea rows="4" cols="50" name="description" placeholder="What do you have to do?"
+            onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"><%= @overlong_description %></textarea>
+          </td>
         </tr><tr>
           <td class="new_task_label">Date due:</td>
           <td><input type="text" name="date_due" placeholder="Optional: format mm/dd or yyyy/mm/dd" class="other_input_box"></td>
         </tr><tr>
           <td class="new_task_label">Categories:</td>
-          <td><input type="text" name="categories" value="" placeholder="Separate by commas: design, debugging, requirements writing" class="other_input_box"></td>
+          <td><textarea rows="2" cols="50" type="text" name="categories" placeholder="Separate by commas: design, debugging"
+          onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"><%= @bad_categories %></textarea></td>
         </tr><tr>
           <td>&nbsp;</td>
           <td>
@@ -32,8 +36,8 @@
             </div>
           </td>
         </tr>
+        </form>
       </table>
-    </form>
 
   </body>
 </html>

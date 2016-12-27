@@ -29,8 +29,22 @@ class TaskStore
     end
   end
 
+  # move item to deleted page
+  def delete_task(id)
+    @store.transaction do
+      @store[id].categories["deleted"] = true
+    end
+  end
+
+  # move item to deleted page
+  def undelete_task(id)
+    @store.transaction do
+      @store[id].categories["deleted"] = false
+    end
+  end
+
   # delete item entirely
-  def delete(id)
+  def delete_forever(id)
     @store.transaction do
       @store.delete(id)
     end
