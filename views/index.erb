@@ -19,7 +19,7 @@
           <td class="new_task_label"><label for="description">Describe task:</label></td>
           <td width="90%">
             <textarea rows="4" cols="50" name="description" placeholder="What do you have to do?"
-            onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"><%= @overlong_description %></textarea>
+            onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" autofocus="autofocus"><%= @overlong_description %></textarea>
           </td>
         </tr><tr>
           <td class="new_task_label">Date due:</td>
