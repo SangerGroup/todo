@@ -84,7 +84,7 @@ Its functionality is identical across various categories, with a few changes. --
               <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type.tr(" ", "%20") %>"><button type="submit" name="delete">Undelete</button></label>
             </form>
             <form method="post" action="/perma_delete/<%= task.id %>">
-              <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type.tr(" ", "%20") %>"><button type="submit" name="delete">Delete!!</button></label>
+              <!-- UNCOMMENT-OUT THIS <label for="delete_button"><input type="hidden" name="pg_type" value="<%= @pg_type.tr(" ", "%20") %>"><button type="submit" name="delete">Delete!!</button></label> -->
             </form>
           <% end %>
         </td>

@@ -34,7 +34,6 @@ class ToDoTest < Minitest::Test
     # Test that "saved" message for user is in returned page
     # NOT DONE THIS DOESN'T WORK
     # assert last_response.body.include?("Task saved") # COMMENTED OUT FOR NOW
-    # Test that "Test task 123" is stored in yml store
-    # DO THIS?!?!
+    # Test that "Test task 123" is stored in yml store - don't know how to do this
   end
 end

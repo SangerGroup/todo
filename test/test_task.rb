@@ -14,12 +14,13 @@ class TestTask < Minitest::Test
   # due date, and categories.
   def test_initialize
     refute_nil(@task.id)
-    refute_nil(@task.position)
+    refute_nil(@task.ok)
+    refute_nil(@task.message)
     refute_nil(@task.description)
+    refute_nil(@task.position)
     refute_nil(@task.date_added)
     refute_nil(@task.date_due)
     refute_nil(@task.categories)
-    refute_nil(@task.ok)
   end
 
   # given a set of ids (check they're all numerical), determine the highest

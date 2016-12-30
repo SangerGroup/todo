@@ -1,5 +1,6 @@
 # planning doc for todo
 todo_planning.txt
+requirements.txt
 *.yml
 
 *.gem

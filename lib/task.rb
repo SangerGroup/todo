@@ -30,8 +30,6 @@ class Task
     @categories = {"completed" => false, "deleted" => false}
     if categories_validate(params["categories"]) == true
       @categories.merge!(categories_parse(params["categories"]))
-      puts "CATEGORIES ="
-      p @categories
     else
       @ok = false
       @bad_categories = params["categories"] # so this appears prefilled
@@ -74,7 +72,8 @@ class Task
     user_message = ""
     categories.each do |cat|
       user_message << " Category '#{cat}' was too long." if cat.length > 25
-      good_chars = [*'0'..'9', *'a'..'z', *'A'..'Z'].join + ' '
+      good_chars = [*'0'..'9', *'a'..'z', *'A'..'Z', '/', '-', '(', ')', '&',
+        '#', '@', '+', ',', '.', '?', '!', '|'].join + ' '
       unless cat.split(//).all? {|char| good_chars.include?(char) }
         user_message << " Category '#{cat}' had weird characters."
       end
