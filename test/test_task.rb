@@ -45,4 +45,36 @@ class TestTask < Minitest::Test
     assert_equal(@task.check_description("This is a test."), "ok")
   end
 
+  def test_parse_date
+    refute_equal(@task.parse_date("12/1/2016"), "error")
+    refute_equal(@task.parse_date("6/30"), "error")
+    refute_equal(@task.parse_date("12-1-2016"), "error")
+    refute_equal(@task.parse_date("July 1"), "error")
+    refute_equal(@task.parse_date("now"), "error")
+    refute_equal(@task.parse_date("today"), "error")
+    refute_equal(@task.parse_date("tomorrow"), "error")
+    refute_equal(@task.parse_date("yesterday"), "error")
+
+    assert_equal(@task.parse_date("13/1"), "error")
+    assert_equal(@task.parse_date("1234"), "error")
+    assert_equal(@task.parse_date("foo"), "error")
+    assert_equal(@task.parse_date(""), "error")
+    assert_equal(@task.parse_date(nil), "error")
+  end
+
+  def test_categories_validate
+    assert(@task.categories_validate("foo"))
+    assert(@task.categories_validate("foo bar"))
+    refute_equal(@task.categories_validate("0123456789012345678901234"),
+      " Category '0123456789012345678901234' was too long.")
+    assert_equal(@task.categories_validate("01234567890123456789012345"),
+      " Category '01234567890123456789012345' was too long.")
+    assert(@task.categories_validate("~"), " Category '~' had weird characters.")
+  end
+
+  def test_categories_parse
+    assert_equal(@task.categories_parse("  yo  , FOO, Bar,  baz, qux
+      "), {"yo" => true, "foo" => true, "bar" => true, "baz" => true, "qux" => true} )
+  end
+
 end

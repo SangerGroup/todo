@@ -125,7 +125,6 @@ get('/category/:cat_page') do
   session[:message] = "" # clear message after being used
   @cat_page = params['cat_page'] # name of page to fetch
   @pg_type = 'category' # so task_table knows page type
-  puts "CAT PAGE = #{@cat_page}, PAGE TYPE = #{@pg_type}"
   @tasks = store.all
   # don't show completed or deleted
   @tasks.reject! do |task|

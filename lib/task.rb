@@ -1,3 +1,6 @@
+require 'time'
+require 'date'
+
 class Task
   attr_accessor :id, :position, :description, :date_added, :date_due,
     :categories, :message, :ok, :overlong_description, :bad_categories
@@ -58,9 +61,20 @@ class Task
 
   def parse_date(user_input)
     begin
+      parsed_date = ""
       now = Time.new
-      parsed_date = Time.parse(user_input, now)
-    rescue
+      case user_input
+      when "now", "Now", "today", "Today"
+        then parsed_date = now
+      when "yesterday", "Yesterday"
+        then parsed_date = Date.today - 1
+      when "tomorrow", "Tomorrow"
+        then parsed_date = Date.today + 1
+      else
+        parsed_date = Time.parse(user_input, now)
+      end
+      return parsed_date
+    rescue => error
       return "error"
     end
   end
