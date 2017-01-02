@@ -13,7 +13,8 @@ class ToDoTest < Minitest::Test
   def setup
     @store = TaskStore.new('tasks.yml')
     @tasks = @store.all
-    # dummy data mimics user input
+    # dummy data mimics user input; tests that user input is saved and displayed
+    # groovily
     params = {"description" => "Test task 123", "categories" => "foo, bar"}
     @task1 = Task.new(@store, params)
     @task1.categories["deleted"] = true
@@ -23,7 +24,8 @@ class ToDoTest < Minitest::Test
     @task2.categories["completed"] = true
     @task2.categories["foobar"] = true
     @store.save(@task2)
-    @task3 = Task.new(@store, params)
+    params_for_3 = params.merge("date_due" => "1/1/2016")
+    @task3 = Task.new(@store, params_for_3)
     @task3.categories[nil] = "foobar"
     @store.save(@task3)
   end
@@ -38,14 +40,17 @@ class ToDoTest < Minitest::Test
     # Test index.erb returns required content
     assert last_response.body.include?("Simple To Do List") # page title correct
     # task checkbox present
-    assert last_response.body.include?('<label for="task_checkbox"><input class="checkbox"')
+    assert last_response.body.include?('<label for="task_checkbox"><input '\
+      'class="checkbox"')
     # description from test task present
     assert last_response.body.include?("Test task 123")
+    assert last_response.body.include?("2016-01-01") # task's date present
+    # category link present
+    assert last_response.body.include?('<a href="/category/foo">foo</a>')
     assert last_response.body.include?("<table") # table present
     assert last_response.body.include?("<th") # header present
-    assert last_response.body.include?("<tr")
+    assert last_response.body.include?("<tr") # row present
     assert last_response.body.include?("Add new task") # new task dialogue present
-
 
     # FINISH THIS LATER
     # all input boxes are followed by placeholders; requires regexen, so deferred
