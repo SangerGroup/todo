@@ -8,18 +8,39 @@ table {
   max-width: 1200px;
 }
 
+#task_table {
+  margin-top: 0px;
+}
+
 #add_new_task {
   max-width: 400px;
 }
 
-.header {
-  width: auto;
-  border: none;
+span.header_tab:hover {
+  background-color: #e7e7e7;
+}
+
+span.cat_header_tab a:hover {
+  background-color: #e7e7e7;
+  text-decoration: underline;
+}
+
+.header_tab {
+  display: inline-block;
+  padding: 6px;
+  margin-bottom: 0px;
+}
+
+.header_tab > a {
+  text-decoration: none;
+}
+
+.header_tab > a:hover {
+  text-decoration: underline;
 }
 
 /* Dropdown Button */
 .dropbtn {
-    background-color: #4CAF50;
     padding: 16px;
     font-size: 16px;
     border: none;
@@ -36,20 +57,44 @@ table {
 .dropdown-content {
     display: none;
     position: absolute;
+    margin-left: -6px;
     background-color: #f9f9f9;
     min-width: 160px;
 }
 
+.hidden_block_for_nudging {
+  display: block;
+  visibility: hidden;
+  color: black;
+  padding: 3px 16px;
+  text-decoration: none;
+}
+
+
 /* Links inside the dropdown */
 .dropdown-content a {
+    display: block;
     color: black;
     padding: 12px 16px;
     text-decoration: none;
-    display: block;
+    border-style: solid;
+    border-color: lightblue;
+    border-width: 0px 2px 0px 2px;
 }
 
+.dropdown-content a.bottom_cat {
+    border-style: solid;
+    border-color: lightblue;
+    border-width: 0px 2px 2px 2px;
+}
+
+
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {
+  background-color: #e7e7e7;
+  text-decoration: underline;
+
+}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {

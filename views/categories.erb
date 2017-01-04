@@ -6,6 +6,7 @@
     <title><%= @cat_page.split(" ").map(&:capitalize).join(' ') %></title>
   </head>
   <body>
+    <div class="container-fluid">
     <h1><%= @cat_page.split(" ").map(&:capitalize).join(' ') %></h1>
       <%= erb :task_table %>
   </body>
