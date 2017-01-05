@@ -46,23 +46,32 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("Test task 123")
     assert last_response.body.include?("2016-01-01") # task's date present
     # category link present
-    assert last_response.body.include?('<a href="/category/foo">foo</a>')
+    assert last_response.body.include?('<a href="/category/foo')
     assert last_response.body.include?("<table") # table present
     assert last_response.body.include?("<th") # header present
     assert last_response.body.include?("<tr") # row present
     assert last_response.body.include?("Add new task") # new task dialogue present
-
-    # FINISH THIS LATER
-    # all input boxes are followed by placeholders; requires regexen, so deferred
+    # placeholders present
+    assert last_response.body.include?("What do you have to do?")
+    assert last_response.body.include?("Optional: format mm/dd")
+    assert last_response.body.include?("Separate by commas")
+    # checkbox is unchecked
+    assert last_response.body.include?('<form method="post" action="/check_completed/')
+    # all categories in the store are shown in the Tags list
+    @tasks.each do |task|
+      task.categories.each do |cat, value|
+        next if (cat == "deleted" || cat == "completed" || cat == nil)
+        puts "CAT = href=\"/category/#{cat}"
+        assert last_response.body.include?("href=\"/category/#{cat}")
+      end
+    end
+    #all display_categories are shown in tags dropdown
+    #tasks marked as "completed" and "deleted" are *not* shown in task list
+    #other tasks are shown
 =begin
-    more items are shown (e.g., checkboxes, date added, etc.)
-    checkboxes are unchecked
-    various required user messages are shown on page
-    overlong description message is shown on page
-    bad categories message is shown on page
-    all display_categories are shown in tags dropdown
-    tasks marked as "completed" and "deleted" are *not* shown in task list
-    other tasks are shown
+    # various required user messages are shown on page
+    # overlong description message is shown on page
+    # bad categories message is shown on page
 =end
   end
 

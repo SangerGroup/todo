@@ -6,9 +6,9 @@
   <span class="header_tab"><a href="/deleted">Deleted</a></span>
   <span class="header_tab">
     <div class="dropdown">
-      <span class="header_tab cat_header_tab"><a href="">Tags</a></span>
+      <span class="cat_header_tab"><a href="">Tags</a></span>
       <div class="dropdown-content">
-        <span class="hidden_block_for_nudging"></span>
+        <span id="hidden_block_for_nudging"></span>
         <% cat_counter = 0 #%>
         <% @display_categories.each do |cat| %>
           <% cat_counter += 1 %>
@@ -71,7 +71,7 @@ Its functionality is identical across various categories, with a few changes. --
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>><%= due if task.date_due != "" %></td>
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <% task.categories.each do |cat, value| %>
-            <% next if (cat == "completed" || cat == "deleted" || cat == "nil") %>
+            <% next if (cat == "completed" || cat == "deleted" || cat == nil) %>
             <a href="/category/<%= cat %>"><%= cat.split(" ").map(&:capitalize).join(' ') %></a><% unless cat == task.categories.keys.last %>
               <%= "|" %>
             <% end %>
