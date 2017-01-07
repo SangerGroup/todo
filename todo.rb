@@ -67,7 +67,7 @@ post('/newtask') do
   redirect '/'
 end
 
-get('/') do |*user_message|
+get('/') do
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   @overlong_description = session[:overlong_description] if
@@ -85,7 +85,7 @@ get('/') do |*user_message|
   end
   # prepare complete list of categories to show in list
   @pg_type = 'index' # for use formatting task_table
-  erb :index #, user_message => {:user_message => params[:user_message]}
+  erb :index
 end
 
 get('/index.html') do

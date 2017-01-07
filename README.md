@@ -13,8 +13,9 @@ and go to http://localhost:4567 on your local machine.
 ## Tests
 
 Make sure the Ruby gem `rake` is installed, then run `rake test` in the main
-directory (the place where `todo.rb` is) to run all tests. Coverage at present
-is very bad.
+directory (the place where `todo.rb` is) to run all tests. Coverage includes all
+`get` methods and helper methods that don't simply write to the YAML store.
+I still don't know how to test my `put` methods. Help?
 
 ## Plans
 
