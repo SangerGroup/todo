@@ -118,8 +118,19 @@ table {
   width: 16px;
 }
 
+.edit_button_wrapper {
+  float: left;
+  display:inline-block;
+}
+
+
+.description_wrapper {
+  overflow:hidden;
+  padding-left: 5px;
+}
+
 .task {
-  width: 50%;
+  width: 45%;
   padding-left: 4px;
   padding-right: 4px;
 }
@@ -133,7 +144,7 @@ table {
 }
 
 .categories {
-  width: 26%;
+  width: 22%;
 }
 
 .delete {
@@ -162,6 +173,10 @@ td {
 .new_task_label {
   text-align: right;
   width: 10%;
+}
+
+.editing {
+  color: red;
 }
 
 textarea {
@@ -201,6 +216,13 @@ button:hover {
   color:white;
   border: 1px grey solid;
   border-radius: 4px;
+}
+
+.cancel-button {
+  background-color: grey;
+  text-decoration: none;
+  font-size: 0.98em;
+  padding: 1.2px 2px 2px 2px;
 }
 
 .user_message {

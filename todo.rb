@@ -48,35 +48,47 @@ end
 post('/newtask') do
   @task = Task.new(store, params)
   # decide whether to save & prepare user messages
-  if @task.ok == true # task is ok!
-    @task.message << " " + "Task saved!"
-    session[:message] = @task.message # use session[:message] for user messages
-    @task.message = ""
-    store.save(@task)
-  else
-    @task.message << " " + "Not saved." # task not ok
-    session[:message] = @task.message # use session[:message] for user messages
-    session[:overlong_description] = @task.overlong_description if
-      @task.overlong_description
-    session[:bad_categories] = @task.bad_categories if
-      @task.bad_categories
-    @task.message = ""
-    @task.overlong_description = nil
-    @task.bad_categories = nil
-  end
+  judge_and_maybe_save(store, @task)
   redirect '/'
 end
 
+post('/start_edit/:id') do
+  session[:id_to_edit] = params[:id].to_i
+  redirect "/" if params[:pg_type] == "index"
+  redirect params[:pg_type]
+end
+
+post('/submit_edit/:id') do
+  params[:id] = params[:id].to_i
+  @task = Task.new(store, params)
+  session[:id_to_edit] = params[:id] # prepare data for possible re-editing
+  judge_and_maybe_save(store, @task)
+  redirect "/" if params[:pg_type] == "index"
+  redirect params[:pg_type]
+end
+
+# This is kind of complicated because it is used for (1) presenting the task
+# list, (2) passing parameters for editing, and (3) passing parameters for when
+# the user wants to 
 get('/') do
   # prepare erb messages
   @user_message = session[:message] if session[:message]
-  @overlong_description = session[:overlong_description] if
-    session[:overlong_description]
-  @bad_categories = session[:bad_categories] if
-    session[:bad_categories]
   session[:message] = "" # clear message after being used
-  session[:overlong_description] = "" # ditto
-  session[:bad_categories] = "" # ditto
+  # prepare page for editing if in editing mode
+  if session[:id_to_edit]
+    @id_to_edit = session[:id_to_edit]
+    puts "ID TO EDIT = #{@id_to_edit}"
+    @editing_mode = true
+    session[:id_to_edit] = nil # clear id_to_edit after use
+  else # otherwise, check for error messages
+    @editing_mode = false
+    @overlong_description = session[:overlong_description] if
+      session[:overlong_description]
+    @bad_categories = session[:bad_categories] if
+      session[:bad_categories]
+    session[:overlong_description] = "" # ditto
+    session[:bad_categories] = "" # ditto
+  end
   @tasks = store.all
   @display_categories = compile_categories(@tasks)
   @tasks.reject! do |task|

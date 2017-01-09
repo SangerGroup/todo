@@ -29,6 +29,7 @@ Its functionality is identical across various categories, with a few changes. --
 <table id="task_table">
   <thead class="thead">
     <th>&nbsp;</th>
+    <th>&nbsp;</th>
     <th class="task">Task</th>
     <th class="date_added">Date added</th>
     <th class="date_due">Date due</th>
@@ -37,12 +38,12 @@ Its functionality is identical across various categories, with a few changes. --
   </thead>
   <tbody>
     <% row_counter = 0 %>
-    <% @tasks.each do |task| %>
+    <% @tasks.reverse.each do |task| %>
       <% row_counter += 1 %>
       <tr<%= " class='colored_row'" if row_counter.even? %>>
-        <td class="task_table_tds"<%= " id='bottommost'" if row_counter == @tasks.length %>>
 
-          <!-- checkbox logic & styling is complex -->
+        <!-- checkbox -->
+        <td class="task_table_tds"<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <!-- determine checkbox appearance based on whether item is completed -->
           <% if task.categories["completed"] == true %>
             <% hover_on_checkbox = "/assets/images/nxt-checkbox-unchecked-th.png" %>
@@ -62,13 +63,31 @@ Its functionality is identical across various categories, with a few changes. --
               <% end %>
             </label>
           </form>
-
         </td>
-        <td class="task"<%= " id='bottommost'" if row_counter == @tasks.length %>><%= task.description %></td>
+
+        <!-- edit button (in same cell as description) -->
+        <td class="task_table_tds"<%= " id='bottommost'" if row_counter == @tasks.length %>>
+          <div class="edit_button_wrapper">
+            <form method="post" action="/start_edit/<%= task.id %>">
+              <label for="edit_button"><input class="checkbox" type="image" name="edit_button"  src="/assets/images/editing-icon.png"></label>
+            </form>
+          </div>
+        </td>
+
+        <!-- description -->
+        <td class="task"<%= " id='bottommost'" if row_counter == @tasks.length %>>
+          <%= task.description %>
+        </td>
+
+        <!-- date added -->
         <% added = task.date_added.strftime('%F') %>
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>><%= added %></td>
+
+        <!-- date due -->
         <% due = task.date_due.strftime('%F') unless task.date_due == "" %>
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>><%= due if task.date_due != "" %></td>
+
+        <!-- categories -->
         <td<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <% task.categories.each do |cat, value| %>
             <% next if (cat == "completed" || cat == "deleted" || cat == nil) %>
@@ -77,6 +96,8 @@ Its functionality is identical across various categories, with a few changes. --
             <% end %>
           <% end %>
         </td>
+
+        <!-- delete button -->
         <td class="rightmost"<%= " id='bottommost'" if row_counter == @tasks.length %>>
           <% unless @pg_type == "deleted" %>
             <form method="post" action="/delete/<%= task.id %>">

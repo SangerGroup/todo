@@ -6,7 +6,8 @@ class Task
     :categories, :message, :ok, :overlong_description, :bad_categories
 
   def initialize(store, params)
-    @id = assign_id(store.ids)
+    # assign an id only if there isn't one in params; if there is, this is an edit
+    @id = (params[:id] ? params[:id] : assign_id(store.ids))
     @ok = true # by default
     @message = ""
     @description = params["description"]

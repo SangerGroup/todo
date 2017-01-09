@@ -72,6 +72,8 @@ class ToDoTest < Minitest::Test
     # Note, based on the above data, the complete list of added drop-down tags
     # (because they are not completed & not deleted) should be as follows
     @drop_down_tags = ["foo", "bar"]
+    @first_description_to_display = @store.all.last.description
+    @second_description_to_display = @store.all[@store.all.length - 2].description
   end
 
   def app
@@ -80,17 +82,17 @@ class ToDoTest < Minitest::Test
 
   def test_get_slash
     get '/'
+    puts "OVERLONG DESCRIPTION? #{@overlong_description}" if @overlong_description
     assert last_response.ok?
     # Test index.erb returns required content
     assert last_response.body.include?("Simple To Do List") # page title correct
     # task checkbox present
     assert last_response.body.include?('<label for="task_checkbox"><input '\
       'class="checkbox"')
-    # description from test task present
-    assert last_response.body.include?("Test task 123")
+    assert last_response.body.include?('action="/start_edit/') # edit button present
+    assert last_response.body.include?("Test task 123") # description from test task present
     assert last_response.body.include?("2016-01-01") # task's date present
-    # category link present
-    assert last_response.body.include?('<a href="/category/foo')
+    assert last_response.body.include?('<a href="/category/foo') # category link present
     assert last_response.body.include?("<table") # table present
     assert last_response.body.include?("<th") # header present
     assert last_response.body.include?("<tr") # row present
@@ -105,6 +107,10 @@ class ToDoTest < Minitest::Test
     @drop_down_tags.each do |tag|
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
+    # tasks are reversed; last-saved task is displayed before second-to-last
+    assert last_response.body.index(@first_description_to_display) <
+      last_response.body.index(@second_description_to_display)
+
     # SAVED FOR LATER:
     # various required user messages are shown on page
     # overlong description message is shown on page
