@@ -14,9 +14,17 @@
           <% cat_counter += 1 %>
           <% if cat_counter == @display_categories.length %>
             <a href="/category/<%= cat %>" class="bottom_cat"><%=
-              cat.split(" ").map(&:capitalize).join(' ') %></a>
+              cat.split(" ").map(&:capitalize).join(' ') %>
+              <% if @all_tasks.count {|task| task.categories[cat] == true} > 1 %>
+                (<%= @all_tasks.count {|task| task.categories[cat] == true} %>)
+              <% end %>
+            </a>
           <% else %>
-            <a href="/category/<%= cat %>"><%= cat.split(" ").map(&:capitalize).join(' ') %></a>
+            <a href="/category/<%= cat %>"><%= cat.split(" ").map(&:capitalize).join(' ') %>
+            <% if @all_tasks.count {|task| task.categories[cat] == true} > 1 %>
+              (<%= @all_tasks.count {|task| task.categories[cat] == true} %>)
+            <% end %>
+            </a>
           <% end %>
         <% end %>
       </div>

@@ -69,7 +69,7 @@ end
 
 # This is kind of complicated because it is used for (1) presenting the task
 # list, (2) passing parameters for editing, and (3) passing parameters for when
-# the user wants to 
+# the user wants to
 get('/') do
   # prepare erb messages
   @user_message = session[:message] if session[:message]
@@ -90,6 +90,8 @@ get('/') do
     session[:bad_categories] = "" # ditto
   end
   @tasks = store.all
+  @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
+    task.categories["deleted"] == true}
   @display_categories = compile_categories(@tasks)
   @tasks.reject! do |task|
     (task.categories["completed"] == true ||
@@ -109,6 +111,9 @@ get('/completed') do
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
   @tasks = store.all
+  @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
+    task.categories["deleted"] == true}
+ # for e.g. the number of items in tags
   # prepare complete list of categories to show in list
   @display_categories = compile_categories(@tasks)
   @tasks.reject! do |task|
@@ -124,6 +129,9 @@ get('/deleted') do
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
   @tasks = store.all
+  @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
+    task.categories["deleted"] == true}
+ # for e.g. the number of items in tags
   # prepare complete list of categories to show in list
   @display_categories = compile_categories(@tasks) # compile before tossing some
   @tasks.select! {|task| task.categories["deleted"] == true}
@@ -138,6 +146,9 @@ get('/category/:cat_page') do
   @cat_page = params['cat_page'] # name of page to fetch
   @pg_type = 'category' # so task_table knows page type
   @tasks = store.all
+  @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
+    task.categories["deleted"] == true}
+ # for e.g. the number of items in tags
   # don't show completed or deleted
   @tasks.reject! do |task|
     (task.categories["completed"] == true || task.categories["deleted"] == true)

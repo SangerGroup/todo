@@ -20,6 +20,7 @@ class ToDoTest < Minitest::Test
     @task0 = Task.new(@store, params)
     @task0.categories["deleted"] = false
     @task0.categories["completed"] = false
+    @task0.categories["foo123"] = true
     @store.save(@task0)
     @task1 = Task.new(@store, params)
     @task1.categories["deleted"] = true
@@ -63,6 +64,7 @@ class ToDoTest < Minitest::Test
     @task9 = Task.new(@store, params_for_9)
     @task9.categories["completed"] = false
     @task9.categories["deleted"] = false # this one isn't deleted, shouldn't show up
+    @task9.categories["foo123"] = true
     @store.save(@task9)
     params_for_10 = {"description" => "I am not a foo task", "categories" => "bar"}
     @task10 = Task.new(@store, params_for_10)
@@ -110,6 +112,8 @@ class ToDoTest < Minitest::Test
     # tasks are reversed; last-saved task is displayed before second-to-last
     assert last_response.body.index(@first_description_to_display) <
       last_response.body.index(@second_description_to_display)
+    # number of tasks in "foo123" category appears between parentheses on page
+    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
 
     # SAVED FOR LATER:
     # various required user messages are shown on page
@@ -148,6 +152,8 @@ class ToDoTest < Minitest::Test
     @drop_down_tags.each do |tag|
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
+    # number of tasks in "foo123" category appears between parentheses on page
+    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
   end
 
   def test_get_deleted
@@ -181,6 +187,8 @@ class ToDoTest < Minitest::Test
     @drop_down_tags.each do |tag|
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
+    # number of tasks in "foo123" category appears between parentheses on page
+    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
   end
 
   def test_get_category
@@ -214,6 +222,8 @@ class ToDoTest < Minitest::Test
     @drop_down_tags.each do |tag|
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
+    # number of tasks in "foo123" category appears between parentheses on page
+    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
   end
 
 
