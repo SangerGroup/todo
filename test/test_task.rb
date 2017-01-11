@@ -69,12 +69,15 @@ class TestTask < Minitest::Test
       " Category '0123456789012345678901234' was too long.")
     assert_equal(@task.categories_validate("01234567890123456789012345"),
       " Category '01234567890123456789012345' was too long.")
-    assert(@task.categories_validate("~"), " Category '~' had weird characters.")
+    assert_includes(@task.categories_validate("~"), " Category '~' had weird characters.")
+    assert_includes(@task.categories_validate("%"), " Category '%' lacks a letter or digit.")
+    refute_equal(@task.categories_validate("?, ?"), " Category '?' had weird characters. Category '?' lacks a letter or digit. Category ' ?' had weird characters. Category ' ?' lacks a letter or digit.")
   end
 
   def test_categories_parse
     assert_equal(@task.categories_parse("  yo  , FOO, Bar,  baz, qux
       "), {"yo" => true, "foo" => true, "bar" => true, "baz" => true, "qux" => true} )
+    assert_equal(@task.categories_parse("foo, bar, "), {"foo" => true, "bar" => true})
   end
 
 end

@@ -113,7 +113,7 @@ class ToDoTest < Minitest::Test
     assert last_response.body.index(@first_description_to_display) <
       last_response.body.index(@second_description_to_display)
     # number of tasks in "foo123" category appears between parentheses on page
-    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
+    assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
 
     # SAVED FOR LATER:
     # various required user messages are shown on page
@@ -153,7 +153,7 @@ class ToDoTest < Minitest::Test
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
     # number of tasks in "foo123" category appears between parentheses on page
-    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
+    assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
   end
 
   def test_get_deleted
@@ -188,7 +188,7 @@ class ToDoTest < Minitest::Test
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
     # number of tasks in "foo123" category appears between parentheses on page
-    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
+    assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
   end
 
   def test_get_category
@@ -223,7 +223,7 @@ class ToDoTest < Minitest::Test
       assert last_response.body.include?("<a href=\"/category/#{tag}")
     end
     # number of tasks in "foo123" category appears between parentheses on page
-    assert last_response.body.include?("Foo123" && "(2)</a>") # NEEDS A REGEX!
+    assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
   end
 
 

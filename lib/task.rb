@@ -85,12 +85,20 @@ class Task
   def categories_validate(categories)
     categories = categories.split(',')
     user_message = ""
+    cats_seen = []
     categories.each do |cat|
+      cat.strip!
+      next if cats_seen.include?(cat)
+      cats_seen << cat
       user_message << " Category '#{cat}' was too long." if cat.length > 25
       good_chars = [*'0'..'9', *'a'..'z', *'A'..'Z', '/', '-', '(', ')', '&',
-        '#', '@', '+', ',', '.', '?', '!', '|'].join + ' '
+        '#', '@', '+', '.', '?', '!'].join ' '
+      word_chars = [*'0'..'9', *'a'..'z', *'A'..'Z'].join
       unless cat.split(//).all? {|char| good_chars.include?(char) }
         user_message << " Category '#{cat}' had weird characters."
+      end
+      unless cat.split(//).any? {|char| word_chars.include?(char)}
+        user_message << " Category '#{cat}' lacks a letter or digit."
       end
     end
     return user_message unless user_message == ""
@@ -101,6 +109,8 @@ class Task
     categories = categories.split(',')
     # remove leading and trailing whitespace & lowercase everything
     categories.map! { |cat| cat.strip.downcase }
+    # remove blank category (when user types a comma with nothing after it)
+    categories.reject! { |cat| cat == "" }
     # iterate through prepared array and save to @categories
     this_task_categories = {}
     categories.each do |cat|

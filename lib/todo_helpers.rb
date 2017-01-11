@@ -21,6 +21,7 @@ def judge_and_maybe_save(store, task)
     session[:message] = task.message # use session[:message] for user messages
     task.message = ""
     store.save(task)
+    session[:id_to_edit] = nil # exits from editing mode
   else
     task.message << " " + "Not saved." # task not ok
     session[:message] = task.message # use session[:message] for user messages
