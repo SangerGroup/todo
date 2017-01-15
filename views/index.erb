@@ -9,6 +9,7 @@
       <title>Simple To Do</title>
   </head>
   <body>
+
     <% # Prepare variables for editing mode or erroneous input %>
     <% if @editing_mode %>
       <% # locate task to edit using @id_to_edit %>
@@ -31,43 +32,76 @@
     <% end %>
 
     <h1>Simple To Do List</h1>
-      <%= erb :task_table %>
-      <br />
-      <table id="add_new_task">
-        <form method="post" action="/<%= new_task_action %>" id="description">
-        <tr><td>&nbsp;</td><td style="align:left;"><%= box_title %></td></tr>
-        <tr>
-          <td class="new_task_label"><label for="description">Describe task:</label></td>
-          <td width="90%">
-            <textarea rows="4" cols="50" name="description" placeholder="What do you have to do?"
-            onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" autofocus="autofocus"><%= description_to_edit if description_to_edit %></textarea>
-          </td>
-        </tr><tr>
-          <td class="new_task_label">Date due:</td>
-          <td><input type="text" name="date_due" placeholder="Optional: format mm/dd or yyyy/mm/dd" class="other_input_box" value="<%= due_date_to_edit %>"></td>
-        </tr><tr>
-          <td class="new_task_label">Categories:</td>
-          <td><textarea rows="2" cols="50" type="text" name="categories" placeholder="Separate by commas: design, debugging"
-          onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"><%= categories_to_edit if categories_to_edit %></textarea></td>
-        </tr><tr>
-          <td>&nbsp;</td>
-          <td>
-            <% if @editing_mode %>
-              <input type="hidden" name="was_in_editing_mode" value="<% @id_to_edit %>">
-            <% end %>
-            <input type="submit" class="input-button" value="<%= submit_button_title %>">&nbsp;
-            <% if @editing_mode %>
-              <a class="input-button cancel-button" href="/">Cancel</a>
-            <% end %>
-            <div class="user_message">
-              <% if @user_message %>
-                <%= @user_message %>
-              <% end %>
-            </div>
-          </td>
-        </tr>
-        </form>
-      </table>
 
-  </body>
+      <%= erb :header %>
+
+      <!-- ADD NEW TASK BOX -->
+      <form method="post" action="/<%= new_task_action %>" id="description">
+        <table class="div_table div_add_new_task"><tr><td>
+          <!-- top container: new_task box title -->
+          <div class="row">
+            <span class="cell">
+              &nbsp;
+            </span>
+            <span class="cell" style="align:left;">
+              <%= box_title %>
+            </span>
+          </div>
+          <!-- left container: task description -->
+          <div class="container">
+            <span class="cell div_task_label">
+              <label for="description">Describe task:</label>
+            </span>
+            <span class="cell" width="45%">
+              <textarea rows="4" cols="50" name="description" placeholder="What do you have to do?"
+              onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" autofocus="autofocus"><%= description_to_edit if description_to_edit %></textarea>
+            </span>
+          </div>
+          <!-- right container: date due and categories; should wrap on phones -->
+          <div class="container">
+            <!-- due date row (top) -->
+            <div class="row">
+              <span class="cell div_task_label">
+                Date due:
+              </span>
+              <span class="cell div_task_label" width="45%">
+                <input type="text" name="date_due" placeholder="Optional: format mm/dd or yyyy/mm/dd" class="other_input_box" value="<%= due_date_to_edit %>">
+              </span>
+            </div>
+            <!-- categories row (bottom) -->
+            <div class="row">
+              <span class="cell div_task_label">
+                Categories:
+              </span>
+              <span class="cell div_task_label">
+                <textarea rows="2" cols="50" type="text" name="categories"
+                placeholder="Separate by commas: design, debugging"
+                onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"><%= categories_to_edit if categories_to_edit %></textarea>
+              </span>
+            </div>
+          </div>
+          <div class="div_bottom_row">
+            <span class="cell" style="float: right;">
+              <% if @editing_mode %>
+                <input type="hidden" name="was_in_editing_mode" value="<% @id_to_edit %>">
+              <% end %>
+              <input type="submit" class="input-button" value="<%= submit_button_title %>">&nbsp;
+              <% if @editing_mode %>
+                <a class="input-button cancel-button" href="/">Cancel</a>
+              <% end %>
+              <div class="user_message">
+                <% if @user_message %>
+                  <%= @user_message %>
+                <% end %>
+              </div>
+            </span>
+          </div>
+        </td></tr></table>
+      </form>
+
+      <br />
+
+      <%= erb :task_table %>
+
+    </body>
 </html>

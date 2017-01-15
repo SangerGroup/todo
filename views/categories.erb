@@ -8,6 +8,7 @@
   <body>
     <div class="container-fluid">
     <h1><%= @cat_page.split(" ").map(&:capitalize).join(' ') %></h1>
+      <%= erb :header %>
       <%= erb :task_table %>
   </body>
 </html>

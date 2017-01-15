@@ -185,7 +185,7 @@ textarea {
 }
 
 .other_input_box {
-  width: 275px;
+  width: 277px;
   font-family: Verdana, Geneva, sans-serif;
 }
 
@@ -228,4 +228,39 @@ button:hover {
 .user_message {
   color: red;
   display: inline;
+}
+
+/* div table css */
+.div_table {
+  display: block;
+  width: 100%;
+}
+
+.div_add_new_task {
+  max-width: 830px;
+}
+
+.container {
+  float: left;
+  height: 100px;
+  width: 400px;
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+}
+
+.div_task_label {
+  text-align: right;
+  vertical-align: middle;
+  width: 50px;
+}
+
+.div_bottom_row {
+  display: block;
+  clear: both;
 }

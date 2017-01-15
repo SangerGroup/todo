@@ -1,37 +1,4 @@
 
-<!-- page header -->
-<div>
-  <span class="header_tab"><a href="/">Home</a></span>
-  <span class="header_tab"><a href="/completed">Completed</a></span>
-  <span class="header_tab"><a href="/deleted">Deleted</a></span>
-  <span class="header_tab">
-    <div class="dropdown">
-      <span class="cat_header_tab"><a href="">Tags</a></span>
-      <div class="dropdown-content">
-        <span id="hidden_block_for_nudging"></span>
-        <% cat_counter = 0 #%>
-        <% @display_categories.each do |cat| %>
-          <% cat_counter += 1 %>
-          <% if cat_counter == @display_categories.length %>
-            <a href="/category/<%= cat %>" class="bottom_cat"><%=
-              cat.split(" ").map(&:capitalize).join(' ') %>
-              <% if @all_tasks.count {|task| task.categories[cat] == true} > 1 %>
-                (<%= @all_tasks.count {|task| task.categories[cat] == true} %>)
-              <% end %>
-            </a>
-          <% else %>
-            <a href="/category/<%= cat %>"><%= cat.split(" ").map(&:capitalize).join(' ') %>
-            <% if @all_tasks.count {|task| task.categories[cat] == true} > 1 %>
-              (<%= @all_tasks.count {|task| task.categories[cat] == true} %>)
-            <% end %>
-            </a>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  </span>
-</div>
-
 <!-- This table lists all tasks in a certain category (or in the main view).
 Its functionality is identical across various categories, with a few changes. -->
 <table id="task_table">
