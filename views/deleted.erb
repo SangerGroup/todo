@@ -7,8 +7,17 @@
   </head>
   <body>
     <h1>Deleted items</h1>
-      <%= erb :header %>
-      <%= erb :task_table %>
+    <%= erb :header %>
+    <%= erb :task_table %>
+    <% if @user_message %>
+      <p class="deletion_message_style"><%= @user_message %></p>
+    <% end %>
+    <form method="post" action="/delete_all">
+      <label for="delete_all_button">
+        <input type="submit" name="delete_all_button" value="Delete All"
+          class="delete_all_button" />
+      </label>
+    </form>
     <p>You can undelete, or permanently delete, items from this page.</p>
   </body>
 </html>

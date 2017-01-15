@@ -67,6 +67,16 @@ post('/submit_edit/:id') do
   redirect params[:pg_type]
 end
 
+post('/delete_all') do
+  # note, this prepares a deletion list before calling #delete_forever_all
+  # to allow the test script to delete just tested items
+  to_delete = store.all.find_all {|task| task.categories["deleted"] == true}
+  before_length = store.all.length
+  store = delete_forever_all(store, to_delete)
+  session[:message] = "Deleted all tasks!" if before_length > store.all.length
+  redirect '/deleted'
+end
+
 # This is kind of complicated because it is used for (1) presenting the task
 # list, (2) passing parameters for editing, and (3) passing parameters for when
 # the user wants to

@@ -1,3 +1,4 @@
+require './lib/task_store.rb'
 # prepare list of displayable categories for user consumption
 def compile_categories(tasks)
   display_categories = []
@@ -35,4 +36,8 @@ def judge_and_maybe_save(store, task)
   end
 end
 
-# then make sure it also works for post /submit_edit
+def delete_forever_all(store, to_delete)
+  # examine array of tasks to delete; delete each permanently from store
+  to_delete.each { |task| store.delete_forever(task.id) }
+  return store # Note!
+end

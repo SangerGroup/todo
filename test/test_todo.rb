@@ -189,6 +189,8 @@ class ToDoTest < Minitest::Test
     end
     # number of tasks in "foo123" category appears between parentheses on page
     assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
+    # delete all button present
+    assert_match(/<input type=\"submit\".*Delete All/, last_response.body)
   end
 
   def test_get_category

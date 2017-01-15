@@ -264,3 +264,19 @@ button:hover {
   display: block;
   clear: both;
 }
+
+.delete_all_button {
+  margin-top: 10px;
+  font-size: 1.2em;
+  float: right;
+}
+
+.delete_all_button:hover {
+  color: red;
+}
+
+.deletion_message_style {
+  color: red;
+  font-size: 1.2em;
+  text-align: right;
+}
