@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon"
+        type="image/png"
+        href="/assets/images/favicon.ico">
+    <meta charset='utf-8' />
+    <link type="text/css" rel="stylesheet" href="/assets/styles.css"/>
+    <title>Create an Account</title>
+  </head>
+  <p style="font-size:.75em;"><a href="/">&#8656; Home</a></p>
+  <h2>Simple To Do List</h2>
+  <h1>Create an Account</h1>
+  <body>
+    <table class="create_account"><tr><td>
+      <form action="/submit_new_account" method="post">
+        <label for="username">Email:
+          <input type="text" name="username" placeholder="Put email address here"
+            autofocus="autofocus" onkeydown="if (event.keyCode == 13)
+            { this.form.submit(); return false; }" >
+        </label><br /><br /><label for="password">Password:
+          <input type="text" name="password" placeholder="Type password"
+            onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }">
+        </label><br /><br /><label for="password_again">Password again:
+          <input type="text" name="password_again" placeholder="Type password again"
+            onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }">
+        </label><br /><br />
+        <button type="submit">Create account</button>
+      </form>
+    </td></tr></table>
+  </body>
+</html>

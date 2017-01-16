@@ -84,10 +84,10 @@ class ToDoTest < Minitest::Test
 
   def test_get_slash
     get '/'
-    puts "OVERLONG DESCRIPTION? #{@overlong_description}" if @overlong_description
     assert last_response.ok?
     # Test index.erb returns required content
     assert last_response.body.include?("Simple To Do List") # page title correct
+
     # task checkbox present
     assert last_response.body.include?('<label for="task_checkbox"><input '\
       'class="checkbox"')
@@ -114,6 +114,9 @@ class ToDoTest < Minitest::Test
       last_response.body.index(@second_description_to_display)
     # number of tasks in "foo123" category appears between parentheses on page
     assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
+    # login/out form present
+    assert_match((/form method=\"get\" action=\"\/login/ ||
+      /form method=\"get\" action=\"\/logout/), last_response.body)
 
     # SAVED FOR LATER:
     # various required user messages are shown on page
@@ -154,6 +157,9 @@ class ToDoTest < Minitest::Test
     end
     # number of tasks in "foo123" category appears between parentheses on page
     assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
+    # login/out form present
+    assert_match((/form method=\"get\" action=\"\/login/ ||
+      /form method=\"get\" action=\"\/logout/), last_response.body)
   end
 
   def test_get_deleted
@@ -191,6 +197,9 @@ class ToDoTest < Minitest::Test
     assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
     # delete all button present
     assert_match(/<input type=\"submit\".*Clear All Permanently/, last_response.body)
+    # login/out form present
+    assert_match((/form method=\"get\" action=\"\/login/ ||
+      /form method=\"get\" action=\"\/logout/), last_response.body)
   end
 
   def test_get_category
@@ -226,8 +235,23 @@ class ToDoTest < Minitest::Test
     end
     # number of tasks in "foo123" category appears between parentheses on page
     assert_match(/Foo123\s*\(2\)\s*<\/a>/, last_response.body)
+    # login/out form present
+    assert_match((/form method=\"get\" action=\"\/login/ ||
+      /form method=\"get\" action=\"\/logout/), last_response.body)
   end
 
+  def test_get_create_account
+    get '/create_account'
+    assert last_response.ok?
+    # title is correct
+    assert last_response.body.include?("<h1>Create an Account</h1>")
+    # action = /submit_new_account
+    assert last_response.body.include?("action='/submit_new_account'")
+    # username input present
+    assert_match(/<input type=\"text\".*name=\"username\"/, last_response.body)
+    # password input present
+    assert_match(/<input type=\"text\".*name=\"password\"/, last_response.body)
+  end
 
   def teardown
     # These Task objects were actually saved to the yaml file; they need to be

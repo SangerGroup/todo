@@ -29,4 +29,37 @@
       </div>
     </div>
   </span>
+
+  <!-- prepare login/out variables -->
+  <% if session[:username] %>         <!-- logged in -->
+    <% loginout_name = "logout" %>
+    <% loginout_text = "Logout" %>
+    <% loginout_path = "/logout" %>
+  <% else %>                          <!-- not logged in -->
+    <% loginout_name = "login" %>
+    <% loginout_text = "Login" %>
+    <% loginout_path = "/login" %>
+  <% end %>
+
+  <!-- LOGIN / LOGOUT -->
+  <span class="header_tab">
+    <!-- Same form code generates login/logout button/action -->
+    <form method="get" action="<%= loginout_path %>">
+      <input type="hidden" name="pg_type" value="<%= @pg_type %>">
+      <button class="loginout" type="submit"
+        name="<%= loginout_name %>"><%= loginout_text %></button>
+    </form>
+  </span>
+  <!-- WELCOME / CREATE ACCOUNT -->
+  <span class="header_tab">
+    <% if session[:username] %>      <!-- no action to take -->
+      <%= "Welcome, #{session[:username]}!" %>
+    <% else %>                       <!-- invite account creation -->
+      <form method="get" action="/create_account">
+        <input type="hidden" name="pg_type" value="<%= @pg_type %>">
+        <button class="loginout" type="submit"
+          name="create_account">Create Account!</button>
+      </form>
+    <% end %>
+  </span>
 </div>

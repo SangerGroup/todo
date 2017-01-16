@@ -8,6 +8,10 @@ table {
   max-width: 1200px;
 }
 
+.create_account {
+  width: 250px;
+}
+
 #task_table {
   margin-top: 0px;
 }
@@ -197,7 +201,7 @@ textarea:focus::-webkit-input-placeholder {
   color: transparent;
 }
 
-button {
+button.main_table {
      background:none!important;
      border:none;
      padding:0!important;
@@ -206,8 +210,21 @@ button {
      font-size: .85em;
 }
 
-button:hover {
+button.main_table:hover {
   color: red;
+}
+
+button.loginout {
+  font-size: 1em;
+  background:none!important;
+  border:none;
+  padding:0!important;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.loginout:hover {
+  color: blue;
 }
 
 .input-button {

@@ -82,20 +82,20 @@ end
 # the user wants to
 get('/') do
   # prepare erb messages
-  @user_message = session[:message] if session[:message]
+  @user_message = (session[:message] ? session[:message] : "")
   session[:message] = "" # clear message after being used
   # prepare page for editing if in editing mode
   if session[:id_to_edit]
     @id_to_edit = session[:id_to_edit]
-    puts "ID TO EDIT = #{@id_to_edit}"
     @editing_mode = true
     session[:id_to_edit] = nil # clear id_to_edit after use
   else # otherwise, check for error messages
     @editing_mode = false
-    @overlong_description = session[:overlong_description] if
-      session[:overlong_description]
-    @bad_categories = session[:bad_categories] if
-      session[:bad_categories]
+    @id_to_edit = ""
+    @overlong_description = (session[:overlong_description] ?
+      session[:overlong_description] : "")
+    @bad_categories = ( session[:bad_categories] ?
+      session[:bad_categories] : "")
     session[:overlong_description] = "" # ditto
     session[:bad_categories] = "" # ditto
   end
@@ -118,7 +118,7 @@ end
 
 get('/completed') do
   # prepare erb messages
-  @user_message = session[:message] if session[:message]
+  @user_message = (session[:message] ? session[:message] : "")
   session[:message] = "" # clear message after being used
   @tasks = store.all
   @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
@@ -136,7 +136,7 @@ end
 
 get('/deleted') do
   # prepare erb messages
-  @user_message = session[:message] if session[:message]
+  @user_message = (session[:message] ? session[:message] : "")
   session[:message] = "" # clear message after being used
   @tasks = store.all
   @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
@@ -149,9 +149,13 @@ get('/deleted') do
   erb :deleted
 end
 
+get('/create_account') do
+  erb :create_account
+end
+
 get('/category/:cat_page') do
   # prepare erb messages
-  @user_message = session[:message] if session[:message]
+  @user_message = (session[:message] ? session[:message] : "")
   session[:message] = "" # clear message after being used
   @cat_page = params['cat_page'] # name of page to fetch
   @pg_type = 'category' # so task_table knows page type

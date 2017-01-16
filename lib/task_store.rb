@@ -1,8 +1,10 @@
 require 'yaml/store'
+# require 'dropbox'
+# dbx = Dropbox::Client.new(ENV['DROPBOX_ACCESS_TOKEN'])
+# folder = dbx.create_folder('/myfolder') # => Dropbox::FolderMetadata
+# folder.id
 
 class TaskStore
-
-  attr_accessor :ids
 
   def initialize(file_name)
     @store = YAML::Store.new(file_name)

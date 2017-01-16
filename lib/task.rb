@@ -21,7 +21,7 @@ class Task
     @position = ""
     @date_added = Time.new
     unless params["date_due"] == ""
-      @date_due = parse_date(params["date_due"]) unless @due_date == ""
+      @date_due = parse_date(params["date_due"])
       if @date_due == "error"
         @date_due = ""
         @message << " " + "Due date not saved. Please check the format."
@@ -75,7 +75,7 @@ class Task
         parsed_date = Time.parse(user_input, now)
       end
       return parsed_date
-    rescue => error
+    rescue
       return "error"
     end
   end
