@@ -246,11 +246,42 @@ class ToDoTest < Minitest::Test
     # title is correct
     assert last_response.body.include?("<h1>Create an Account</h1>")
     # action = /submit_new_account
-    assert last_response.body.include?("action='/submit_new_account'")
+    assert last_response.body.include?("action=\"/submit_new_account\"")
     # username input present
     assert_match(/<input type=\"text\".*name=\"username\"/, last_response.body)
     # password input present
     assert_match(/<input type=\"text\".*name=\"password\"/, last_response.body)
+  end
+
+  # checks whether a certain task, marked completed, is deleted from the page
+  # and appears on '/completed'; then, when marked uncompleted from /completed,
+  # appears on '/'
+  def test_check_completed_id
+    post "/check_completed/#{@task9.id}", params = {id: 9, pg_type: "index"}
+    follow_redirect!
+    refute last_response.body.include?("Should not show up 9262")
+    get "/completed"
+    assert last_response.body.include?("Should not show up 9262")
+    post "/uncheck_completed/#{@task9.id}", params = {id: 9, pg_type: "index"}
+    get "/completed"
+    refute last_response.body.include?("Should not show up 9262")
+    get "/"
+    assert last_response.body.include?("Should not show up 9262")
+    # a user, who checks an item completed while on a cat page, remains there
+    post "/check_completed/#{@task9.id}", params = {id: 9, pg_type: "category",
+      cat_page: "foo"}
+    follow_redirect!
+    refute last_response.body.include?("Should not show up 9262")
+    assert last_response.body.include?("<h1>Foo</h1>")
+  end
+
+  # post new task; check that the user message & the description appear
+  def test_post_newtask
+    post "/newtask", params = {"description" => "Write about quick brown foxes",
+      "categories" => "writing823"}
+    follow_redirect!
+    assert last_response.body.include?("Task saved")
+    assert last_response.body.include?("Write about quick brown foxes")
   end
 
   def teardown

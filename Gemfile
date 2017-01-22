@@ -5,7 +5,7 @@ gem 'rspec-core'
 gem 'rspec-expectations'
 gem 'rspec-mocks'
 gem 'sinatra'
-gem 'dropbox-sdk-v2'
+# gem 'dropbox-sdk-v2'
 gem 'rake'
 
 group :test do

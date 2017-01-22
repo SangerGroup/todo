@@ -12,21 +12,21 @@
   <h2>Simple To Do List</h2>
   <h1>Create an Account</h1>
   <body>
-    <table class="create_account"><tr><td>
+    <table class="create_account"><tr><td><div class="enclosing-blue-box">
       <form action="/submit_new_account" method="post">
-        <label for="username">Email:
+        <label for="username">Email:<br />
           <input type="text" name="username" placeholder="Put email address here"
             autofocus="autofocus" onkeydown="if (event.keyCode == 13)
             { this.form.submit(); return false; }" >
-        </label><br /><br /><label for="password">Password:
+        </label><br /><br /><label for="password">Password:<br />
           <input type="text" name="password" placeholder="Type password"
             onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }">
-        </label><br /><br /><label for="password_again">Password again:
+        </label><br /><br /><label for="password_again">Password again:<br />
           <input type="text" name="password_again" placeholder="Type password again"
             onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }">
         </label><br /><br />
-        <button type="submit">Create account</button>
+        <button type="submit" class="input-button">Create account</button>
       </form>
-    </td></tr></table>
+    </div></td></tr></table>
   </body>
 </html>

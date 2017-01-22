@@ -9,7 +9,11 @@ table {
 }
 
 .create_account {
-  width: 250px;
+  width: 200px;
+}
+
+.enclosing-blue-box {
+  padding: 4px;
 }
 
 #task_table {
