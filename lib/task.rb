@@ -7,7 +7,7 @@ class Task
 
   def initialize(store, params)
     # assign an id only if there isn't one in params; if there is, this is an edit
-    @id = (params[:id] ? params[:id] : assign_id(store.ids))
+    @id = (params[:id] ? params[:id].to_i : assign_id(store.ids))
     @ok = true # by default
     @message = ""
     @description = params["description"]
@@ -44,7 +44,7 @@ class Task
 
   # Determine highest ID; assign ID + 1 to this object
   def assign_id(all_ids)
-    highest_id = all_ids.max || 0
+    highest_id = all_ids.max || 10 # reserve first 10 ids for testing
     return highest_id + 1
   end
 

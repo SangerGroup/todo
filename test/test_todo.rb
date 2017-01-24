@@ -7,9 +7,13 @@ require_relative '../todo'
 require './lib/task'
 require './lib/task_store'
 
+####################################################
+
 class ToDoTest < Minitest::Test
   include Rack::Test::Methods
 
+####################################################
+# GINORMOUS SETUP METHOD...didn't think hard about this
   def setup
     @store = TaskStore.new('tasks.yml')
     @tasks = @store.all
@@ -82,6 +86,8 @@ class ToDoTest < Minitest::Test
     Sinatra::Application
   end
 
+####################################################
+# SLOW TESTS OF MAIN 'get' METHODS
   def test_get_slash
     get '/'
     assert last_response.ok?
@@ -89,7 +95,7 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("Simple To Do List") # page title correct
 
     # task checkbox present
-    assert last_response.body.include?('<label for="task_checkbox"><input '\
+    assert last_response.body.include?('<label for="task_checkbox"></label><input '\
       'class="checkbox"')
     assert last_response.body.include?('action="/start_edit/') # edit button present
     assert last_response.body.include?("Test task 123") # description from test task present
@@ -117,11 +123,6 @@ class ToDoTest < Minitest::Test
     # login/out form present
     assert_match((/form method=\"get\" action=\"\/login/ ||
       /form method=\"get\" action=\"\/logout/), last_response.body)
-
-    # SAVED FOR LATER:
-    # various required user messages are shown on page
-    # overlong description message is shown on page
-    # bad categories message is shown on page
   end
 
   def test_get_completed
@@ -130,7 +131,7 @@ class ToDoTest < Minitest::Test
     # Test completed.erb returns required content
     assert last_response.body.include?("Completed!") # page title correct
     # task checkbox present
-    assert last_response.body.include?('<label for="task_checkbox"><input '\
+    assert last_response.body.include?('<label for="task_checkbox"></label><input '\
       'class="checkbox"')
     # description from test task present
     assert last_response.body.include?("Test task 123")
@@ -140,13 +141,6 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("<table") # table present
     assert last_response.body.include?("<th") # header present
     assert last_response.body.include?("<tr") # row present
-    # ADD THESE LATER!
-    # assert last_response.body.include?("Add new task") # new task dialogue present
-    # placeholders present
-    # assert last_response.body.include?("What do you have to do?")
-    # assert last_response.body.include?("Optional: format mm/dd")
-    # assert last_response.body.include?("Separate by commas")
-
     # checkbox is checked
     assert last_response.body.include?('<form method="post" action="/uncheck_completed/')
     # non-deleted task doesn't appear
@@ -168,7 +162,7 @@ class ToDoTest < Minitest::Test
     # Test deleted.erb returns required content
     assert last_response.body.include?("Deleted items") # page title correct
     # task checkbox present
-    assert last_response.body.include?('<label for="task_checkbox"><input '\
+    assert last_response.body.include?('<label for="task_checkbox"></label><input '\
       'class="checkbox"')
     # description from test task present
     assert last_response.body.include?("Test task 123")
@@ -178,13 +172,6 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("<table") # table present
     assert last_response.body.include?("<th") # header present
     assert last_response.body.include?("<tr") # row present
-    # ADD THESE LATER!
-    # assert last_response.body.include?("Add new task") # new task dialogue present
-    # placeholders present
-    # assert last_response.body.include?("What do you have to do?")
-    # assert last_response.body.include?("Optional: format mm/dd")
-    # assert last_response.body.include?("Separate by commas")
-
     # checkbox is checked
     assert last_response.body.include?('<form method="post" action="/uncheck_completed/')
     # non-deleted task doesn't appear
@@ -208,7 +195,7 @@ class ToDoTest < Minitest::Test
     # Test categories.erb returns required content
     assert last_response.body.include?("<title>Foo") # page title correct
     # task checkbox present
-    assert last_response.body.include?('<label for="task_checkbox"><input '\
+    assert last_response.body.include?('<label for="task_checkbox"></label><input '\
       'class="checkbox"')
     # description from test task present
     assert last_response.body.include?("Test task 123")
@@ -218,13 +205,6 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("<table") # table present
     assert last_response.body.include?("<th") # header present
     assert last_response.body.include?("<tr") # row present
-    # ADD THESE LATER!
-    # assert last_response.body.include?("Add new task") # new task dialogue present
-    # placeholders present
-    # assert last_response.body.include?("What do you have to do?")
-    # assert last_response.body.include?("Optional: format mm/dd")
-    # assert last_response.body.include?("Separate by commas")
-
     # checkbox is checked
     assert last_response.body.include?('<form method="post" action="/check_completed/')
     # non-foo task doesn't appear
@@ -240,23 +220,13 @@ class ToDoTest < Minitest::Test
       /form method=\"get\" action=\"\/logout/), last_response.body)
   end
 
-  def test_get_create_account
-    get '/create_account'
-    assert last_response.ok?
-    # title is correct
-    assert last_response.body.include?("<h1>Create an Account</h1>")
-    # action = /submit_new_account
-    assert last_response.body.include?("action=\"/submit_new_account\"")
-    # username input present
-    assert_match(/<input type=\"text\".*name=\"username\"/, last_response.body)
-    # password input present
-    assert_match(/<input type=\"text\".*name=\"password\"/, last_response.body)
-  end
-
+####################################################
+# HOLY SHIT, INTEGRATION TESTS!
+# (i.e., of 'post' methods)
   # checks whether a certain task, marked completed, is deleted from the page
   # and appears on '/completed'; then, when marked uncompleted from /completed,
   # appears on '/'
-  def test_check_completed_id
+  def test_check_completed_and_uncompleted_id
     post "/check_completed/#{@task9.id}", params = {id: 9, pg_type: "index"}
     follow_redirect!
     refute last_response.body.include?("Should not show up 9262")
@@ -277,27 +247,55 @@ class ToDoTest < Minitest::Test
 
   # post new task; check that the user message & the description appear
   def test_post_newtask
-    post "/newtask", params = {"description" => "Write about quick brown foxes",
-      "categories" => "writing823"}
+    post "/newtask", params = {:id => 0, "description" =>
+      "Write about quick brown foxes", "categories" => "writing823"}
+    @newtask = @task
     follow_redirect!
     assert last_response.body.include?("Task saved")
     assert last_response.body.include?("Write about quick brown foxes")
   end
 
+  # ADD THESE LATER!
+  # assert last_response.body.include?("Add new task") # new task dialogue present
+  # placeholders present
+  # assert last_response.body.include?("What do you have to do?")
+  # assert last_response.body.include?("Optional: format mm/dd")
+  # assert last_response.body.include?("Separate by commas")
+
+
+####################################################
+# OTHER TESTS
+  def test_get_create_account
+    get '/create_account'
+    assert last_response.ok?
+    # title is correct
+    assert last_response.body.include?("<h1>Create an Account</h1>")
+    # action = /submit_new_account
+    assert last_response.body.include?("action=\"/submit_new_account\"")
+    # username input present
+    assert_match(/<input type=\"text\".*name=\"username\"/, last_response.body)
+    # password input present
+    assert_match(/<input type=\"text\".*name=\"password\"/, last_response.body)
+  end
+
+####################################################
+# THE INEVITABLE DESTRUCTION THAT FOLLOWS EMPIRE]
+# (or else database accumulates cruft)
   def teardown
     # These Task objects were actually saved to the yaml file; they need to be
     # deleted or else they accumulate and are actually shown to the user.
-    @store.delete_forever(@task0.id)
-    @store.delete_forever(@task1.id)
-    @store.delete_forever(@task2.id)
-    @store.delete_forever(@task3.id)
-    @store.delete_forever(@task4.id)
-    @store.delete_forever(@task5.id)
-    @store.delete_forever(@task6.id)
-    @store.delete_forever(@task7.id)
-    @store.delete_forever(@task8.id)
-    @store.delete_forever(@task9.id)
-    @store.delete_forever(@task10.id)
+    @store.delete_forever(@task0.id) if @task0.id
+    @store.delete_forever(@task1.id) if @task1.id
+    @store.delete_forever(@task2.id) if @task2.id
+    @store.delete_forever(@task3.id) if @task3.id
+    @store.delete_forever(@task4.id) if @task4.id
+    @store.delete_forever(@task5.id) if @task5.id
+    @store.delete_forever(@task6.id) if @task6.id
+    @store.delete_forever(@task7.id) if @task7.id
+    @store.delete_forever(@task8.id) if @task8.id
+    @store.delete_forever(@task9.id) if @task9.id
+    @store.delete_forever(@task10.id) if @task10.id
+    @store.delete_forever(0) # used by test_post_newtask
   end
 
 end

@@ -37,7 +37,7 @@
       <%= erb :header %>
 
       <!-- ADD NEW TASK BOX -->
-      <form method="post" action="/<%= new_task_action %>" id="description">
+      <form method="post" action="/<%= new_task_action %>">
         <table class="div_table div_add_new_task"><tr><td>
           <!-- top container: new_task box title -->
           <div class="row">
@@ -55,7 +55,7 @@
             </span>
             <span class="cell" width="45%">
               <textarea rows="4" cols="50" name="description" placeholder="What do you have to do?"
-              onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" autofocus="autofocus"><%= description_to_edit if description_to_edit %></textarea>
+              id="description" onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" autofocus="autofocus"><%= description_to_edit if description_to_edit %></textarea>
             </span>
           </div>
           <!-- right container: date due and categories; should wrap on phones -->
@@ -63,20 +63,20 @@
             <!-- due date row (top) -->
             <div class="row">
               <span class="cell div_task_label">
-                Date due:
+                <label for="date_due">Date due:</label>
               </span>
               <span class="cell div_task_label" width="45%">
-                <input type="text" name="date_due" placeholder="Optional: format mm/dd or yyyy/mm/dd" class="other_input_box" value="<%= due_date_to_edit %>">
+                <input type="text" name="date_due" placeholder="Optional: format mm/dd or yyyy/mm/dd" id="date_due" class="other_input_box" value="<%= due_date_to_edit %>">
               </span>
             </div>
             <!-- categories row (bottom) -->
             <div class="row">
               <span class="cell div_task_label">
-                Categories:
+                <label for="categories">Categories:</label>
               </span>
               <span class="cell div_task_label">
                 <textarea rows="2" cols="50" type="text" name="categories"
-                placeholder="Separate by commas: design, debugging"
+                placeholder="Separate by commas: design, debugging" id="categories"
                 onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"><%= categories_to_edit if categories_to_edit %></textarea>
               </span>
             </div>
