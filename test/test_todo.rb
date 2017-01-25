@@ -59,7 +59,8 @@ class ToDoTest < Minitest::Test
     @task7.categories[nil] = "foobar"
     @store.save(@task7)
     # test tasks for /deleted
-    params_for_8 = params.merge("date_due" => "1/1/2016")
+    params_for_8 = params.merge("date_due" => "1/1/2016", "description" =>
+      "undeleteme mama")
     @task8 = Task.new(@store, params_for_8)
     @task8.categories["completed"] = true
     @task8.categories["deleted"] = true
@@ -226,23 +227,66 @@ class ToDoTest < Minitest::Test
   # checks whether a certain task, marked completed, is deleted from the page
   # and appears on '/completed'; then, when marked uncompleted from /completed,
   # appears on '/'
-  def test_check_completed_and_uncompleted_id
-    post "/check_completed/#{@task9.id}", params = {id: 9, pg_type: "index"}
+  def test_post_check_completed_and_uncompleted_id
+    post "/check_completed/#{@task9.id}", params = {pg_type: "index"}
     follow_redirect!
     refute last_response.body.include?("Should not show up 9262")
     get "/completed"
     assert last_response.body.include?("Should not show up 9262")
-    post "/uncheck_completed/#{@task9.id}", params = {id: 9, pg_type: "index"}
+    post "/uncheck_completed/#{@task9.id}", params = {pg_type: "index"}
     get "/completed"
     refute last_response.body.include?("Should not show up 9262")
     get "/"
     assert last_response.body.include?("Should not show up 9262")
     # a user, who checks an item completed while on a cat page, remains there
-    post "/check_completed/#{@task9.id}", params = {id: 9, pg_type: "category",
+    post "/check_completed/#{@task9.id}", params = {pg_type: "category",
       cat_page: "foo"}
     follow_redirect!
     refute last_response.body.include?("Should not show up 9262")
     assert last_response.body.include?("<h1>Foo</h1>")
+  end
+
+  # check deleted item disappears from index (and cat page) and then reappears
+  # on deleted page
+  def test_post_delete_id
+    get "/"
+    assert last_response.body.include?("I am not a foo task")
+    get "/category/bar"
+    assert last_response.body.include?("I am not a foo task")
+    post "/delete/#{@task10.id}", params = {pg_type: "index"}
+    follow_redirect! # returns to /
+    assert last_response.body.include?("Deleted task!")
+    refute last_response.body.include?("I am not a foo task") #unique description gone
+    get "/category/bar"
+    refute last_response.body.include?("I am not a foo task") #unique description gone
+  end
+
+  # check undeleted item disappears from deletions page and reappears in / and
+  # a category page
+  def test_post_undelete_id
+    get "/"
+    refute last_response.body.include?("undeleteme mama")
+    get "/category/bar"
+    refute last_response.body.include?("undeleteme mama")
+    post "/undelete/#{@task8.id}", params = {pg_type: "deleted"}
+    follow_redirect!
+    refute last_response.body.include?("undeleteme mama")
+    assert last_response.body.include?("Undeleted task!")
+    get "/completed"
+    assert last_response.body.include?("undeleteme mama")
+  end
+
+  # check that a task is permanently deleted from /deleted
+  def test_post_perma_delete_id
+    get "/deleted"
+    assert last_response.body.include?("undeleteme mama")
+    post "/perma_delete/#{@task8.id}", params = {pg_type: "deleted"}
+    follow_redirect!
+    refute last_response.body.include?("undeleteme mama")
+    # If this were undeleted rather than permadeleted, it would be on /completed.
+    # Check that this is false.
+    get "/completed"
+    refute last_response.body.include?("undeleteme mama")
   end
 
   # post new task; check that the user message & the description appear
@@ -253,6 +297,55 @@ class ToDoTest < Minitest::Test
     follow_redirect!
     assert last_response.body.include?("Task saved")
     assert last_response.body.include?("Write about quick brown foxes")
+    assert last_response.body.include?("<a href=\"/category/writing823\">Writing823")
+    # writes today's date according to %F
+    assert last_response.body.include?("#{Time.new.strftime('%F')}</td>")
+  end
+
+  # Tests BOTH /start_edit AND /submit_edit
+  # Tests that info to edit appears, as it should, in text boxes. This does *not*
+  # test editing on pages other than /index, because that isn't supported yet.
+  def test_post_big_edit_tester
+    post "/start_edit/#{@task0.id}", params = {pg_type: "index"}
+    follow_redirect!
+    assert last_response.body.include?("<span class=\"editing\">Editing task!</span>")
+    assert last_response.body.include?("autofocus=\"autofocus\">Test task 123</textarea>")
+    assert last_response.body.include?("id=\"categories\">foo, bar")
+    assert last_response.body.include?("Submit Edit")
+    # now test /submit_edit
+    post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "Goo goo",
+      categories: "foo, bar, baz", date_due: "2018-02-20"}
+    follow_redirect!
+    assert last_response.body.include?("Task saved!")
+    assert last_response.body.include?("<a href=\"/category/baz\">Baz</a>")
+    assert last_response.body.include?("2018-02-20")
+    # ensure correct error messages are sent after bad edit
+    post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "",
+      categories: "foo, bar, baz", date_due: "2018-02-20"}
+    follow_redirect!
+    assert last_response.body.include?("Description cannot be blank.")
+    post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "Goo goo",
+      categories: "foo, bar, baz", date_due: "asdf"}
+    follow_redirect!
+    assert last_response.body.include?("Due date not saved. Please check the format.")
+    post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "Goo goo",
+      categories: "{|*#}", date_due: "2018-02-20"}
+    follow_redirect!
+    assert last_response.body.include?("Category '{|*#}' had weird characters.")
+    post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "Add complete suite of integration tasks, now that you can Add complete suite of integration tasks, now that you can Add complete suite of integration tasks, now that you can",
+      categories: "foo, bar, baz", date_due: "2018-02-20"}
+    follow_redirect!
+    assert last_response.body.include?("Description was 173 characters long; cannot exceed 140.")
+  end
+
+  # checks that the "Clear All Permanently" button works
+  def test_post_delete_all
+    get "/deleted"
+    refute_match(/<tbody>\s*<\/tbody>/, last_response.body)
+    post "/delete_all"
+    follow_redirect!
+    assert last_response.body.include?("Deleted all tasks!")
+    assert_match(/<tbody>\s*<\/tbody>/, last_response.body)
   end
 
   # ADD THESE LATER!

@@ -87,7 +87,6 @@ get('/') do
   # prepare page for editing if in editing mode
   if session[:id_to_edit]
     @id_to_edit = session[:id_to_edit]
-    puts "ID TO EDIT = #{@id_to_edit}"
     @editing_mode = true
     session[:id_to_edit] = nil # clear id_to_edit after use
   else # otherwise, check for error messages
