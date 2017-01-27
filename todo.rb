@@ -77,6 +77,29 @@ post('/delete_all') do
   redirect '/deleted'
 end
 
+post('/submit_new_account') do
+  # validate email
+  unless validate_email(params[:email])
+    # if email doesn't validate, appropriate message appears on page
+    session[:email_message] = "Sorry, check the email address."
+    session[:bad_email] = params[:email]
+  end
+  # validate password
+  unless validate_pwd(params[:password]) == true # error msg is truthy but not true!
+    # if pwd doesn't validate, appropriate message appears on page
+    session[:pwd_message] = validate_pwd(params[:password])
+    session[:bad_email] = params[:email] # not actually bad here, necessarily
+  end
+  # validate password match
+  unless passwords_match(params[:password], params[:password_again])
+    # if no match, appropriate message appears on page
+    session[:no_match_message] = "Sorry, those passwords don't match. Try again."
+    session[:bad_email] = params[:email] # not actually bad here, necessarily
+  end
+  # NEXT: if all validates, create account & redirect to login
+  redirect "/create_account"
+end
+
 # This is kind of complicated because it is used for (1) presenting the task
 # list, (2) passing parameters for editing, and (3) passing parameters for when
 # the user wants to
@@ -149,6 +172,27 @@ get('/deleted') do
 end
 
 get('/create_account') do
+  # prepare erb messages for email errors
+  if session[:email_message] # always about bad email
+    @email_message = session[:email_message]
+    session[:email_message] = nil
+    @bad_email = session[:bad_email]
+    session[:bad_email] = nil
+  end
+  # prepare erb messages for password errors
+  if session[:pwd_message]
+    @pwd_message = session[:pwd_message]
+    session[:pwd_message] = nil
+    @bad_email = session[:bad_email] if session[:bad_email]
+    session[:bad_email] = nil
+  end
+  # prepare erb message for no-match
+  if session[:no_match_message]
+    @no_match_message = session[:no_match_message]
+    session[:no_match_message] = nil
+    @bad_email = session[:bad_email] if session[:bad_email]
+    session[:bad_email] = nil
+  end
   erb :create_account
 end
 

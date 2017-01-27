@@ -1,8 +1,16 @@
+ENV['RACK_ENV'] = 'test'
+require 'rack/test'
 require 'minitest/autorun'
 require './lib/todo_helpers'
 require './lib/task_store'
+require './lib/task'
 
 class TestToDoHelpers < Minitest::Test
+  include Rack::Test::Methods
+
+  def app
+    Sinatra::Application
+  end
 
   def setup
     @store = TaskStore.new('tasks.yml')
@@ -45,6 +53,39 @@ class TestToDoHelpers < Minitest::Test
     @store_length_after_deletion = @store.all.length
     assert_equal(@testers_to_delete_length, @store_length_before_deletion -
       @store_length_after_deletion)
+  end
+
+  def test_validate_email
+    # email validates (or doesn't)--different addresses validate
+    assert(validate_email("yo.larrysanger@gmail.com")) # returns true if valid
+    assert(validate_email("president@whitehouse.gov"))
+    # refute(validate_email("foo..bar@gmail.com")) # fine, I won't validate that
+    refute(validate_email("president@@whitehouse.gov"))
+    refute(validate_email("foo#bar.com"))
+    refute(validate_email("foo@bar&com"))
+    refute(validate_email("bazqux"))
+    refute(validate_email("google.com"))
+    refute(validate_email("foo@"))
+    refute(validate_email("foo@bar"))
+    refute(validate_email("@bar.com"))
+    refute(validate_email("@bar"))
+  end
+
+  def test_validate_pwd
+    # validates OK password
+    assert(validate_pwd("asdf8asdf"))
+    # must be at least eight characters long
+    assert_equal(validate_pwd("asd5"),"Password must have at least 8 characters. ")
+    # must contain a number
+    assert_equal(validate_pwd("asdfasdf"),"Password must have at least one number. ")
+    # must contain a letter
+    assert_equal(validate_pwd("12341234"),"Password must have at least one letter. ")
+  end
+
+  def test_passwords_match
+    # if two input passwords match, return true; else, return false
+    assert(passwords_match("foobar98", "foobar98"))
+    refute(passwords_match("foobar98", "foobar99"))
   end
 
   def teardown

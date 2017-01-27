@@ -14,17 +14,32 @@
   <body>
     <table class="create_account"><tr><td><div class="enclosing-blue-box">
       <form action="/submit_new_account" method="post">
-        <label for="username">Email:<br />
-          <input type="text" name="username" placeholder="Put email address here"
-            id="username" autofocus="autofocus" onkeydown="if (event.keyCode == 13)
+        <!-- EMAIL -->
+        <label for="email">Email:</label><br />
+          <input type="text" name="email" placeholder="Put email address here"
+            <% if @bad_email %>
+              value="<%= @bad_email %>"
+            <% end %>
+            id="email" autofocus="autofocus" onkeydown="if (event.keyCode == 13)
             { this.form.submit(); return false; }" >
-        </label><br /><br /><label for="password">Password:<br />
+          <% if @email_message %>
+            <div class="user_message"><%= @email_message %></div>
+          <% end %>
+        <!-- PASSWORD -->
+        <br /><br /><label for="password">Password:</label><br />
           <input type="text" name="password" id="password" placeholder="Type password"
             onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }">
-        </label><br /><br /><label for="password_again">Password again:</label><br />
+          <% if @pwd_message %>
+            <div class="user_message"><%= @pwd_message %></div>
+          <% end %>
+        <!-- PASSWORD AGAIN -->
+        <br /><br /><label for="password_again">Password again:</label><br />
           <input type="text" name="password_again" placeholder="Type password again"
             id="password_again" onkeydown="if (event.keyCode == 13) {
             this.form.submit(); return false; }">
+          <% if @no_match_message %>
+            <div class="user_message"><%= @no_match_message %></div>
+          <% end %>
         <br /><br />
         <button type="submit" class="input-button">Create account</button>
       </form>

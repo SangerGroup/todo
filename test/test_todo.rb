@@ -12,6 +12,10 @@ require './lib/task_store'
 class ToDoTest < Minitest::Test
   include Rack::Test::Methods
 
+  def app
+    Sinatra::Application
+  end
+
 ####################################################
 # GINORMOUS SETUP METHOD...didn't think hard about this
   def setup
@@ -81,10 +85,6 @@ class ToDoTest < Minitest::Test
     @drop_down_tags = ["foo", "bar"]
     @first_description_to_display = @store.all.last.description
     @second_description_to_display = @store.all[@store.all.length - 2].description
-  end
-
-  def app
-    Sinatra::Application
   end
 
 ####################################################
@@ -355,6 +355,10 @@ class ToDoTest < Minitest::Test
   # assert last_response.body.include?("Optional: format mm/dd")
   # assert last_response.body.include?("Separate by commas")
 
+  # NOTE
+  # USER ACCOUNT-RELATED TESTS ARE IN test_users.rb!
+  # INCLUDING TESTS ABOUT RELATED test_todo.rb ROUTE METHODS!
+
 
 ####################################################
 # OTHER TESTS
@@ -366,13 +370,14 @@ class ToDoTest < Minitest::Test
     # action = /submit_new_account
     assert last_response.body.include?("action=\"/submit_new_account\"")
     # username input present
-    assert_match(/<input type=\"text\".*name=\"username\"/, last_response.body)
+    assert_match(/<input type=\"text\".*name=\"email\"/, last_response.body)
     # password input present
     assert_match(/<input type=\"text\".*name=\"password\"/, last_response.body)
   end
 
+
 ####################################################
-# THE INEVITABLE DESTRUCTION THAT FOLLOWS EMPIRE]
+# THE INEVITABLE DESTRUCTION THAT FOLLOWS EMPIRE
 # (or else database accumulates cruft)
   def teardown
     # These Task objects were actually saved to the yaml file; they need to be

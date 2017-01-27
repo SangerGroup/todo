@@ -41,3 +41,25 @@ def delete_forever_all(store, to_delete)
   to_delete.each { |task| store.delete_forever(task.id) }
   return store # Note!
 end
+
+# simply validates email; returns true if valid and false if not
+def validate_email(email)
+  email =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i ?
+    (return true) : (return false)
+end
+
+# returns true if password validates; returns error msg otherwise
+def validate_pwd(pwd)
+  message = ""
+  message << "Password must have at least 8 characters. " unless
+    pwd.length > 7
+  message << "Password must have at least one number. " unless
+    /\d/.match(pwd)
+  message << "Password must have at least one letter. " unless
+    /[[:alpha:]]/.match(pwd)
+  message == "" ? (return true) : (return message)
+end
+
+def passwords_match(pwd1, pwd2)
+  pwd1 == pwd2 ? true : false
+end
