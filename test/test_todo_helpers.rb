@@ -1,6 +1,7 @@
 ENV['RACK_ENV'] = 'test'
 require 'rack/test'
 require 'minitest/autorun'
+require_relative '../todo'
 require './lib/todo_helpers'
 require './lib/task_store'
 require './lib/task'
@@ -14,6 +15,7 @@ class TestToDoHelpers < Minitest::Test
 
   def setup
     @store = TaskStore.new('tasks.yml')
+    @users = UserStore.new('users.yml')
     # dummy data mimics user input
     params = {"description" => "Test task 123", "categories" => "foo, bar"}
     @task1 = Task.new(@store, params)
@@ -69,6 +71,14 @@ class TestToDoHelpers < Minitest::Test
     refute(validate_email("foo@bar"))
     refute(validate_email("@bar.com"))
     refute(validate_email("@bar"))
+  end
+
+  def test_email_not_duplicate
+    # create new account using foo@bar.com
+    test1 = User.new("foo@bar.com", "asdf1234", assign_user_id(@users))
+    @users.save(test1)
+    # a second instance of the address doesn't validate
+    refute(email_not_duplicate("foo@bar.com", @users))
   end
 
   def test_validate_pwd

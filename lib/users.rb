@@ -2,10 +2,12 @@
 # the system will save all email addresses and pwds in an accounts file
 # the system will create a datafile when accounts are created
 class User
-  attr_accessor :email, :password, :userid
+  attr_accessor :email, :pwd, :id
 
-  def initialize(email, password)
+  def initialize(email, password, id)
     @email = email
-    @password = password
+    @pwd = password
+    @id = id
   end
+
 end

@@ -372,7 +372,9 @@ class ToDoTest < Minitest::Test
     # username input present
     assert_match(/<input type=\"text\".*name=\"email\"/, last_response.body)
     # password input present
-    assert_match(/<input type=\"text\".*name=\"password\"/, last_response.body)
+    assert_match(/<input type=\"password\".*name=\"password\"/, last_response.body)
+    # password again input present
+    assert_match(/<input type=\"password\".*name=\"password_again\"/, last_response.body)
   end
 
 

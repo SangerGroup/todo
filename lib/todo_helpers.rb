@@ -42,6 +42,39 @@ def delete_forever_all(store, to_delete)
   return store # Note!
 end
 
+def new_account_valid(users)
+  account_valid = true # until proven false
+  # validate email
+  unless validate_email(params[:email])
+    # if email doesn't validate, appropriate message appears on page
+    session[:email_message] = "Sorry, check the email address."
+    session[:bad_email] = params[:email]
+    account_valid = false
+  end
+  # validate password
+  unless validate_pwd(params[:password]) == true # error msg is truthy but not true!
+    # if pwd doesn't validate, appropriate message appears on page
+    session[:pwd_message] = validate_pwd(params[:password])
+    session[:bad_email] = params[:email] # not actually bad here, necessarily
+    account_valid = false
+  end
+  # validate password match
+  unless passwords_match(params[:password], params[:password_again])
+    # if no match, appropriate message appears on page
+    session[:no_match_message] = "Sorry, those passwords don't match. Try again."
+    session[:bad_email] = params[:email] # not actually bad here, necessarily
+    account_valid = false
+  end
+  # check that email isn't a duplicate
+  unless email_not_duplicate(params[:email], users)
+    session[:email_message] = "That email has an account already. "\
+      "<a href=\"/login\">Login?</a>"
+    session[:bad_email] = params[:email]
+    account_valid = false
+  end
+  return account_valid
+end
+
 # simply validates email; returns true if valid and false if not
 def validate_email(email)
   email =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i ?
@@ -62,4 +95,16 @@ end
 
 def passwords_match(pwd1, pwd2)
   pwd1 == pwd2 ? true : false
+end
+
+# Determine highest ID; assign ID + 1 to this object
+def assign_user_id(users)
+  highest_id = users.ids.max || 100 # reserve first 100 ids for testing
+  return highest_id + 1
+end
+
+# returns true if no duplicate; false if duplicate found
+def email_not_duplicate(email, users)
+  return false if users.all.find {|user| user.email == email}
+  return true
 end

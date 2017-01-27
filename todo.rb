@@ -6,9 +6,12 @@ require 'yaml'
 require './lib/task'
 require './lib/task_store'
 require './lib/todo_helpers'
+require './lib/users'
+require './lib/user_store'
 enable :sessions
 
 store = TaskStore.new('tasks.yml')
+users = UserStore.new('users.yml')
 
 post('/check_completed/:id') do
   store.move_to_completed(params[:id].to_i)
@@ -78,24 +81,15 @@ post('/delete_all') do
 end
 
 post('/submit_new_account') do
-  # validate email
-  unless validate_email(params[:email])
-    # if email doesn't validate, appropriate message appears on page
-    session[:email_message] = "Sorry, check the email address."
-    session[:bad_email] = params[:email]
+  # simplifies route method by validating in todo_helpers.rb
+  new_account_valid(users)
+  # create account: assign id and save email & password in account store
+  if new_account_valid(users)
+    id = assign_user_id(users)
+    user = User.new(params[:email], params[:password], id)
+    users.save(user)
   end
-  # validate password
-  unless validate_pwd(params[:password]) == true # error msg is truthy but not true!
-    # if pwd doesn't validate, appropriate message appears on page
-    session[:pwd_message] = validate_pwd(params[:password])
-    session[:bad_email] = params[:email] # not actually bad here, necessarily
-  end
-  # validate password match
-  unless passwords_match(params[:password], params[:password_again])
-    # if no match, appropriate message appears on page
-    session[:no_match_message] = "Sorry, those passwords don't match. Try again."
-    session[:bad_email] = params[:email] # not actually bad here, necessarily
-  end
+  # check if email is already in store
   # NEXT: if all validates, create account & redirect to login
   redirect "/create_account"
 end
@@ -205,7 +199,7 @@ get('/category/:cat_page') do
   @tasks = store.all
   @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
     task.categories["deleted"] == true}
- # for e.g. the number of items in tags
+  # for e.g. the number of items in tags
   # don't show completed or deleted
   @tasks.reject! do |task|
     (task.categories["completed"] == true || task.categories["deleted"] == true)
@@ -219,4 +213,8 @@ get('/category/:cat_page') do
   else
     redirect '/'
   end
+end
+
+get('/login') do
+  erb :login
 end

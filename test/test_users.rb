@@ -11,6 +11,7 @@ class TestUsers < Minitest::Test
   end
 
   def setup
+    @users = UserStore.new('users.yml')
     @sample_user = {email: "yo.larrysanger@gmail.com", password: "password5",
       password_again: "password5"} # change this up below by substituting data
   end
@@ -24,6 +25,9 @@ class TestUsers < Minitest::Test
     refute last_response.body.include?("Sorry, check the email address.")
     refute last_response.body.include?("Password must have at least 8 characters.")
     refute last_response.body.include?("Sorry, those passwords don't match. Try again.")
+    # teardown this user
+    teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
+    @users.delete_forever(teardown_user.id)
     # if email doesn't validate, appropriate message appears on page...
     @sample_user[:email] = "foo, this ain't an email address!"
     post '/submit_new_account', params = @sample_user
@@ -37,8 +41,28 @@ class TestUsers < Minitest::Test
     # and message disappears after that
     refute last_response.body.include?("Sorry, check the email address.")
 
-    # PASSWORD VALIDATION
+    # EMAIL DUPLICATES HANDLED
+    # error messages don't appear when no duplicate is spotted
     @sample_user[:email] = "yo.larrysanger@gmail.com" # fix bad tester for new test
+    post '/submit_new_account', params = @sample_user
+    follow_redirect!
+    refute last_response.body.include?("That email has an account already. "\
+      "<a href=\"/login\">Login?</a>")
+    # attempt to create account again!
+    post '/submit_new_account', params = @sample_user
+    follow_redirect!
+    # if duplicate spotted, appropriate message appears on page...
+    assert last_response.body.include?("That email has an account already. "\
+      "<a href=\"/login\">Login?</a>")
+    # and message (and email) disappears after that
+    get '/create_account'
+    refute last_response.body.include?("That email has an account already. "\
+      "<a href=\"/login\">Login?</a>")
+    # teardown this user
+    teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
+    @users.delete_forever(teardown_user.id)
+
+    # PASSWORD VALIDATION
     @sample_user[:password] = "asd3f"
     post '/submit_new_account', params = @sample_user
     follow_redirect!
@@ -64,7 +88,9 @@ class TestUsers < Minitest::Test
   end
 
   def teardown
-    # delete @sample_user account
+    # shouldn't be necessary, but just in case...
+    teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
+    @users.delete_forever(teardown_user.id) if teardown_user
   end
 
 end
