@@ -108,3 +108,13 @@ def email_not_duplicate(email, users)
   return false if users.all.find {|user| user.email == email}
   return true
 end
+
+# returns true if credentials work, otherwise false
+def confirm_credentials(email, pwd, users)
+  return users.all.find {|user| user.email == email && user.pwd == pwd}
+end
+
+def log_in(email)
+  session[:email] = email
+  session[:now_logged_in] = true # just used for message
+end

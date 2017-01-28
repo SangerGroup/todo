@@ -16,6 +16,10 @@ class TestToDoHelpers < Minitest::Test
   def setup
     @store = TaskStore.new('tasks.yml')
     @users = UserStore.new('users.yml')
+  end
+
+  def test_compile_categories
+    # setup objects
     # dummy data mimics user input
     params = {"description" => "Test task 123", "categories" => "foo, bar"}
     @task1 = Task.new(@store, params)
@@ -37,9 +41,7 @@ class TestToDoHelpers < Minitest::Test
     # list of items that should be deleted; update if you add more "deleted"s
     @testers_to_delete = [@task1, @task4]
     @testers_to_delete_length = @testers_to_delete.length
-  end
 
-  def test_compile_categories
     # removes "deleted" and "completed" from categories
     refute(compile_categories(@tasks).include?("deleted"))
     refute(compile_categories(@tasks).include?("completed"))
@@ -47,14 +49,19 @@ class TestToDoHelpers < Minitest::Test
     assert(1, compile_categories(@tasks).count {|x| x == "foo"})
     # rejects the nil category
     refute(compile_categories(@tasks).include? nil)
-  end
 
-  def test_delete_forever_all
+    # ACTUALLY TESTS test_delete_forever_all
     @store_length_before_deletion = @store.all.length
     @store = delete_forever_all(@store, @testers_to_delete)
     @store_length_after_deletion = @store.all.length
     assert_equal(@testers_to_delete_length, @store_length_before_deletion -
       @store_length_after_deletion)
+
+    # teardown objects
+    @store.delete_forever(@task1.id)
+    @store.delete_forever(@task2.id)
+    @store.delete_forever(@task3.id)
+    @store.delete_forever(@task4.id)
   end
 
   def test_validate_email
@@ -79,6 +86,8 @@ class TestToDoHelpers < Minitest::Test
     @users.save(test1)
     # a second instance of the address doesn't validate
     refute(email_not_duplicate("foo@bar.com", @users))
+    # teardown this test user
+    @users.delete_forever(test1.id)
   end
 
   def test_validate_pwd
@@ -98,13 +107,19 @@ class TestToDoHelpers < Minitest::Test
     refute(passwords_match("foobar98", "foobar99"))
   end
 
+  def test_confirm_credentials
+    # create an account for testing
+    testuser = User.new("foo@bar.com", "asdf1234", assign_user_id(@users))
+    @users.save(testuser)
+    # given the user's email and password, test if the user can log in
+    assert(confirm_credentials("foo@bar.com", "asdf1234", @users))
+    # test that a zany, never-to-be-seen username and password don't log in
+    refute(confirm_credentials("jkkdoalk@asdkflkjsadl.wmx", "asdf1234", @users))
+    # teardown this test user
+    @users.delete_forever(testuser.id)
+end
+
   def teardown
-    # These Task objects were actually saved to the yaml file; they need to be
-    # deleted or else they accumulate and are actually shown to the user.
-    @store.delete_forever(@task1.id)
-    @store.delete_forever(@task2.id)
-    @store.delete_forever(@task3.id)
-    @store.delete_forever(@task4.id)
   end
 
 end

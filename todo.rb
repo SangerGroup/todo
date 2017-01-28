@@ -80,18 +80,39 @@ post('/delete_all') do
   redirect '/deleted'
 end
 
+# create account: assign id and save email & password in account store
 post('/submit_new_account') do
   # simplifies route method by validating in todo_helpers.rb
-  new_account_valid(users)
-  # create account: assign id and save email & password in account store
+  # covers email, duplicate email, pwd, and matching pwd
   if new_account_valid(users)
-    id = assign_user_id(users)
-    user = User.new(params[:email], params[:password], id)
+    user = User.new(params[:email], params[:password], assign_user_id(users))
     users.save(user)
+    # if all validates, log in
+    log_in(params[:email]) # logs the user in
+    @pg_type ? (redirect "/#{@pgtype}") : (redirect '/')
   end
-  # check if email is already in store
-  # NEXT: if all validates, create account & redirect to login
+  # wasn't successful; back to account creation page
   redirect "/create_account"
+end
+
+post('/submit_login') do
+  # test if login info is correct
+  if confirm_credentials(params[:email], params[:password], users)
+    # if correct, login user! Woo-hoo!
+    log_in(params[:email]) # logs the user in
+    # then redirect to pg_type (or /)
+    redirect '/'
+  else
+    # if login info is incorrect, prepare error message
+    session[:credentials_wrong] = true
+    # and redirect to /login
+    redirect '/login'
+  end
+end
+
+post('/logout') do
+  session.clear
+  redirect '/'
 end
 
 # This is kind of complicated because it is used for (1) presenting the task
@@ -114,6 +135,16 @@ get('/') do
       session[:bad_categories]
     session[:overlong_description] = "" # ditto
     session[:bad_categories] = "" # ditto
+  end
+  # if new account, prepare msg announcing success
+  if session[:new_account_successful]
+    @congrats_new_acct = "Welcome! You are now logged in!"
+    session[:new_account_successful] = nil
+  end
+  # if just logged in, prepare msg saying so
+  if session[:now_logged_in]
+    @now_logged_in = "Welcome! You are now logged in!"
+    session[:now_logged_in] = nil
   end
   @tasks = store.all
   @all_tasks = @tasks.clone.reject {|task| task.categories["completed"] == true ||
@@ -216,5 +247,10 @@ get('/category/:cat_page') do
 end
 
 get('/login') do
+  # if login attempt failed, say so
+  if session[:credentials_wrong]
+    @credentials_wrong = "Sorry, that email and password don't work."
+    session[:credentials_wrong] = nil
+  end
   erb :login
 end

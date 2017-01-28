@@ -356,7 +356,7 @@ class ToDoTest < Minitest::Test
   # assert last_response.body.include?("Separate by commas")
 
   # NOTE
-  # USER ACCOUNT-RELATED TESTS ARE IN test_users.rb!
+  # USER ACCOUNT-RELATED TESTS ARE IN test_users.rb
   # INCLUDING TESTS ABOUT RELATED test_todo.rb ROUTE METHODS!
 
 
