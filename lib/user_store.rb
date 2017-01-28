@@ -37,4 +37,11 @@ class UserStore
     end
   end
 
+  # given user email, return UserStore ID
+  def id_from_email(email)
+    @store.transaction do
+      @store.roots.find { |id| @store[id].email == email }
+    end
+  end
+
 end

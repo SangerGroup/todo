@@ -88,7 +88,7 @@ post('/submit_new_account') do
     user = User.new(params[:email], params[:password], assign_user_id(users))
     users.save(user)
     # if all validates, log in
-    log_in(params[:email]) # logs the user in
+    log_in(params[:email], users) # logs the user in
     @pg_type ? (redirect "/#{@pgtype}") : (redirect '/')
   end
   # wasn't successful; back to account creation page
@@ -99,7 +99,7 @@ post('/submit_login') do
   # test if login info is correct
   if confirm_credentials(params[:email], params[:password], users)
     # if correct, login user! Woo-hoo!
-    log_in(params[:email]) # logs the user in
+    log_in(params[:email], users) # logs the user in
     # then redirect to pg_type (or /)
     redirect '/'
   else
@@ -115,10 +115,19 @@ post('/logout') do
   redirect '/'
 end
 
+
+###############################################################################
+# 'get' METHODS!
+###############################################################################
+
 # This is kind of complicated because it is used for (1) presenting the task
 # list, (2) passing parameters for editing, and (3) passing parameters for when
-# the user wants to
+# the user wants to etc., etc. These should probably be in separate methods.
 get('/') do
+  # NEXT!!!
+  # The idea here is that we might need to load the user's store if (a) he
+  # just logged in, or (b) he arrived at this page already logged in
+  # store ||= UserStore.new(session[:email])
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used

@@ -1,4 +1,5 @@
 require './lib/task_store.rb'
+
 # prepare list of displayable categories for user consumption
 def compile_categories(tasks)
   display_categories = []
@@ -114,7 +115,9 @@ def confirm_credentials(email, pwd, users)
   return users.all.find {|user| user.email == email && user.pwd == pwd}
 end
 
-def log_in(email)
+def log_in(email, users)
+  id = users.id_from_email(email) # look up user ID
+  session[:id] = id
   session[:email] = email
   session[:now_logged_in] = true # just used for message
 end
