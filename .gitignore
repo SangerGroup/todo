@@ -14,6 +14,7 @@ requirements.txt
 /test/tmp/
 /test/version_tmp/
 /tmp/
+/userdata/*
 
 # Used by dotenv library to load environment variables.
 # .env
