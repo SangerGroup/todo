@@ -6,8 +6,13 @@ require 'yaml/store'
 
 class TaskStore
 
-  def initialize(file_name)
-    @store = YAML::Store.new(file_name)
+  attr_accessor :path
+
+  # The ID is the passed user ID; needed to build path to userdata file
+  def initialize(*id)
+    id = id[0] # splat arguments are arrays...
+    @path = determine_path(id)
+    @store = YAML::Store.new(@path)
   end
 
   # saves a new task to the YAML store under the task.rb-assigned id
@@ -63,6 +68,29 @@ class TaskStore
     @store.transaction do
       @store[id].categories["completed"] = false
     end
+  end
+
+  def determine_path(*id)
+    id = id[0]
+    if id.nil?
+      tmp_id = get_tmp_id
+      return "./tmp/#{tmp_id}.yml" # if no ID was passed, pick a random num
+    else
+      return "./userdata/#{id}.yml" # if an ID was passed, assign /userdata path
+    end
+  end
+
+  def get_tmp_id
+    tmp_list = Dir.glob("tmp/*").map do |filename|
+      File.basename(filename).to_i
+    end
+    return 1 if tmp_list.empty?
+    return (tmp_list.max + 1)
+  end
+
+  # for use in logging out
+  def delete_path
+    self.remove_instance_variable(:@path)
   end
 
 end

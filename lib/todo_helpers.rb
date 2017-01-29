@@ -121,3 +121,33 @@ def log_in(email, users)
   session[:email] = email
   session[:now_logged_in] = true # just used for message
 end
+
+def check_and_maybe_load_taskstore(store)
+  # Yes this is insane but totally necessary as there are three variables that
+  # impinge on whether a TaskStore needs to be loaded or changed: if one has
+  # been loaded before, if user is logged in, and if the currently-loaded
+  # store's path includes /tmp/ or /userdata/ (i.e., is for a logged-in user
+  # or not). NOT TESTED AT PRESENT SO FIDDLE AT YOUR OWN RISK.
+  if (store.is_a?(TaskStore)) # store previously loaded/exists
+    if (session[:id].nil?) # session ID isn't loaded/user NOT logged in
+      if (store.path.include?("/tmp/")) # store path includes /tmp/
+        return store
+      elsif (store.path.include?("/userdata/")) # store path includes /userdata/
+        return TaskStore.new
+      end
+    else # session ID is loaded/user IS logged in
+      if (store.path.include?("/tmp/")) # store path includes /tmp/
+        return TaskStore.new(session[:id])
+      elsif (store.path.include?("/userdata/")) # store path includes /userdata/
+        return store
+      end
+    end
+  else # store not previously loaded/doesn't exist
+    if (session[:id].nil?) # session ID isn't loaded/user NOT logged in
+      return TaskStore.new
+    else # session ID is loaded/user IS logged in
+      return TaskStore.new(session[:id])
+    end
+  end
+
+end

@@ -19,7 +19,7 @@ class ToDoTest < Minitest::Test
 ####################################################
 # GINORMOUS SETUP METHOD...didn't think hard about this
   def setup
-    @store = TaskStore.new('tasks.yml')
+    @store = TaskStore.new
     @tasks = @store.all
     # dummy data mimics user input; tests that user input is saved and displayed
     # groovily

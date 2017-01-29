@@ -10,7 +10,7 @@ require './lib/users'
 require './lib/user_store'
 enable :sessions
 
-store = TaskStore.new('tasks.yml')
+store = TaskStore.new # REMOVE AFTER DEVELOPMENT IS DONE!
 users = UserStore.new('users.yml')
 
 post('/check_completed/:id') do
@@ -124,10 +124,7 @@ end
 # list, (2) passing parameters for editing, and (3) passing parameters for when
 # the user wants to etc., etc. These should probably be in separate methods.
 get('/') do
-  # NEXT!!!
-  # The idea here is that we might need to load the user's store if (a) he
-  # just logged in, or (b) he arrived at this page already logged in
-  # store ||= UserStore.new(session[:email])
+  store = check_and_maybe_load_taskstore(store)
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
@@ -173,6 +170,7 @@ get('/index.html') do
 end
 
 get('/completed') do
+  store = check_and_maybe_load_taskstore(store)
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
@@ -191,6 +189,7 @@ get('/completed') do
 end
 
 get('/deleted') do
+  store = check_and_maybe_load_taskstore(store)
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
@@ -206,6 +205,7 @@ get('/deleted') do
 end
 
 get('/create_account') do
+  store = check_and_maybe_load_taskstore(store)
   # prepare erb messages for email errors
   if session[:email_message] # always about bad email
     @email_message = session[:email_message]
@@ -231,6 +231,7 @@ get('/create_account') do
 end
 
 get('/category/:cat_page') do
+  store = check_and_maybe_load_taskstore(store)
   # prepare erb messages
   @user_message = session[:message] if session[:message]
   session[:message] = "" # clear message after being used
@@ -256,6 +257,7 @@ get('/category/:cat_page') do
 end
 
 get('/login') do
+  store = check_and_maybe_load_taskstore(store)
   # if login attempt failed, say so
   if session[:credentials_wrong]
     @credentials_wrong = "Sorry, that email and password don't work."
