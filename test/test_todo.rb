@@ -11,6 +11,7 @@ require './lib/task_store'
 
 class ToDoTest < Minitest::Test
   include Rack::Test::Methods
+  include Process
 
   def app
     Sinatra::Application
@@ -377,7 +378,6 @@ class ToDoTest < Minitest::Test
     assert_match(/<input type=\"password\".*name=\"password_again\"/, last_response.body)
   end
 
-
 ####################################################
 # THE INEVITABLE DESTRUCTION THAT FOLLOWS EMPIRE
 # (or else database accumulates cruft)
@@ -396,6 +396,9 @@ class ToDoTest < Minitest::Test
     @store.delete_forever(@task9.id) if @task9.id
     @store.delete_forever(@task10.id) if @task10.id
     @store.delete_forever(0) # used by test_post_newtask
+    sleep 0.1 # for the deletion to finish; I should probably use a Process for this?
+    Dir.glob("tmp/*").each {|file| File.delete(file)}
+    sleep 0.5 # for the deletion to finish; I should probably use a Process for this?
   end
 
 end

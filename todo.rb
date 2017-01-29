@@ -10,7 +10,7 @@ require './lib/users'
 require './lib/user_store'
 enable :sessions
 
-store = TaskStore.new # REMOVE AFTER DEVELOPMENT IS DONE!
+store = TaskStore.new
 users = UserStore.new('users.yml')
 
 post('/check_completed/:id') do

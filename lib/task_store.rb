@@ -81,8 +81,11 @@ class TaskStore
   end
 
   def get_tmp_id
+    sleep 0.1
     tmp_list = Dir.glob("tmp/*").map do |filename|
+      sleep 0.1
       File.basename(filename).to_i
+      sleep 0.1
     end
     return 1 if tmp_list.empty?
     return (tmp_list.max + 1)
