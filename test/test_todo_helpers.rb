@@ -142,6 +142,13 @@ class TestToDoHelpers < Minitest::Test
 
 =begin
 
+  * NEXT: Go through the list below and retire items that are done.
+
+  * Auto-create /tmp and /userdata as needed
+
+  * Post question on Stack Overflow about the seeming Process problem
+    First research "Errno::EACCES: Permission denied @ unlink_internal" some more.
+
   * DONE: check_and_maybe_load_taskstore requirements:
   * IF
       task store exists

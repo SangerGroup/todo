@@ -301,6 +301,10 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("<a href=\"/category/writing823\">Writing823")
     # writes today's date according to %F
     assert last_response.body.include?("#{Time.new.strftime('%F')}</td>")
+    delr = Thread.new do
+      File.delete(@store.path) # seems to help to add this here...
+    end
+    delr.join
   end
 
   # Tests BOTH /start_edit AND /submit_edit
@@ -396,9 +400,10 @@ class ToDoTest < Minitest::Test
     @store.delete_forever(@task9.id) if @task9.id
     @store.delete_forever(@task10.id) if @task10.id
     @store.delete_forever(0) # used by test_post_newtask
-    sleep 0.1 # for the deletion to finish; I should probably use a Process for this?
-    Dir.glob("tmp/*").each {|file| File.delete(file)}
-    sleep 0.5 # for the deletion to finish; I should probably use a Process for this?
+    delr = Thread.new do
+      Dir.glob("tmp/*").each {|file| File.delete(file)}
+    end
+    delr.join
   end
 
 end
