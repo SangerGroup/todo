@@ -5,6 +5,7 @@ require './lib/task_store'
 class TestTask < Minitest::Test
 
   def setup
+    sleep 0.2
     @store = TaskStore.new
     params = {"description" => "", "categories"=>""} # dummy data mimics user input
     @task = Task.new(@store, params)

@@ -19,7 +19,8 @@ class Task
       @bad_categories = params["categories"] # so this appears prefilled
     end
     @position = ""
-    @date_added = Time.new
+    # add a new date_added only if one wasn't passed by the (hidden) edit field
+    @date_added = (params[:date_added].nil? ? Time.new : Time.parse(params[:date_added]))
     unless params["date_due"] == ""
       @date_due = parse_date(params["date_due"])
       if @date_due == "error"

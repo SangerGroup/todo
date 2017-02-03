@@ -84,6 +84,7 @@
             <span class="cell" style="float: right;">
               <input type="submit" class="input-button" value="<%= submit_button_title %>">&nbsp;
               <% if @editing_mode %>
+                <input type="hidden" name="date_added" value="<%= task_to_edit.date_added %>" />
                 <a class="input-button cancel-button" href="/">Cancel</a>
               <% end %>
               <div class="user_message">

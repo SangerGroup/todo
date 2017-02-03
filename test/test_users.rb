@@ -11,6 +11,7 @@ class TestUsers < Minitest::Test
   end
 
   def setup
+    sleep 0.2
     @users = UserStore.new('users.yml')
     # change this up below by substituting datas
     @sample_user = {email: "god@gmail.com", password: "password5",
@@ -28,6 +29,7 @@ class TestUsers < Minitest::Test
     # teardown this user
     teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
     @users.delete_forever(teardown_user.id) if teardown_user
+    sleep 0.2
 
     # EMAIL VALIDATION
     # error messages don't appear when input validates
@@ -40,6 +42,7 @@ class TestUsers < Minitest::Test
     # teardown this user
     teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
     @users.delete_forever(teardown_user.id) if teardown_user
+    sleep 0.2
     # if email doesn't validate, appropriate message appears on page...
     @sample_user[:email] = "foo, this ain't an email address!"
     post '/submit_new_account', params = @sample_user
@@ -73,6 +76,7 @@ class TestUsers < Minitest::Test
     # teardown this user
     teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
     @users.delete_forever(teardown_user.id) if teardown_user
+    sleep 0.2
 
     # PASSWORD VALIDATION
     @sample_user[:password] = "asd3f"
@@ -128,6 +132,7 @@ class TestUsers < Minitest::Test
     # teardown test account
     teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
     @users.delete_forever(teardown_user.id) if teardown_user
+    sleep 0.2
     # login page should return error if email & password aren't in users.yml
     post "/submit_login", params = {email: "jkkdoalk@asdkflkjsadl.wmx",
       password: "asdf1234"}
@@ -151,6 +156,7 @@ class TestUsers < Minitest::Test
     # teardown test account
     teardown_user = @users.all.find {|user| user.email == @sample_user[:email]}
     @users.delete_forever(teardown_user.id) if teardown_user
+    sleep 0.2
   end
 
   def teardown

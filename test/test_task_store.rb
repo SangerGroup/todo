@@ -4,6 +4,7 @@ require './lib/task_store'
 class TestTaskStore < Minitest::Test
 
   def setup
+    sleep 0.2
     @my_store = TaskStore.new
     @my_own_store = TaskStore.new(101)
   end

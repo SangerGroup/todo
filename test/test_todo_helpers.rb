@@ -16,6 +16,7 @@ class TestToDoHelpers < Minitest::Test
   end
 
   def setup
+    sleep 0.2
     @store = TaskStore.new
     @my_own_store = TaskStore.new(1) # #1 will always be a test store
     @users = UserStore.new('users.yml')
@@ -56,6 +57,7 @@ class TestToDoHelpers < Minitest::Test
     # ACTUALLY TESTS test_delete_forever_all
     @store_length_before_deletion = @store.all.length
     @store = delete_forever_all(@store, @testers_to_delete)
+    sleep 0.2
     @store_length_after_deletion = @store.all.length
     assert_equal(@testers_to_delete_length, @store_length_before_deletion -
       @store_length_after_deletion)
@@ -65,6 +67,7 @@ class TestToDoHelpers < Minitest::Test
     @store.delete_forever(@task2.id)
     @store.delete_forever(@task3.id)
     @store.delete_forever(@task4.id)
+    sleep 0.4
   end
 
   def test_validate_email
@@ -91,6 +94,7 @@ class TestToDoHelpers < Minitest::Test
     refute(email_not_duplicate("foo@bar.com", @users))
     # teardown this test user
     @users.delete_forever(test1.id)
+    sleep 0.2
   end
 
   def test_validate_pwd
@@ -120,6 +124,7 @@ class TestToDoHelpers < Minitest::Test
     refute(confirm_credentials("jkkdoalk@asdkflkjsadl.wmx", "asdf1234", @users))
     # teardown this test user
     @users.delete_forever(testuser.id)
+    sleep 0.2
   end
 
   # NOT TESTING THIS BECAUSE I CAN'T (WON'T) PASS SESSION VARIABLES AND

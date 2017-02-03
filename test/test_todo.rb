@@ -20,6 +20,7 @@ class ToDoTest < Minitest::Test
 ####################################################
 # GINORMOUS SETUP METHOD...didn't think hard about this
   def setup
+    sleep 0.1
     @store = TaskStore.new
     @tasks = @store.all
     # dummy data mimics user input; tests that user input is saved and displayed
@@ -292,7 +293,7 @@ class ToDoTest < Minitest::Test
 
   # post new task; check that the user message & the description appear
   def test_post_newtask
-    post "/newtask", params = {:id => 0, "description" =>
+    post "/newtask", params = {"description" =>
       "Write about quick brown foxes", "categories" => "writing823"}
     @newtask = @task
     follow_redirect!
@@ -301,10 +302,6 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("<a href=\"/category/writing823\">Writing823")
     # writes today's date according to %F
     assert last_response.body.include?("#{Time.new.strftime('%F')}</td>")
-    delr = Thread.new do
-      File.delete(@store.path) # seems to help to add this here...
-    end
-    delr.join
   end
 
   # Tests BOTH /start_edit AND /submit_edit
@@ -319,11 +316,12 @@ class ToDoTest < Minitest::Test
     assert last_response.body.include?("Submit Edit")
     # now test /submit_edit
     post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "Goo goo",
-      categories: "foo, bar, baz", date_due: "2018-02-20"}
+      categories: "foo, bar, baz", date_due: "2018-02-20", date_added: "2017-01-01"}
     follow_redirect!
     assert last_response.body.include?("Task saved!")
     assert last_response.body.include?("<a href=\"/category/baz\">Baz</a>")
     assert last_response.body.include?("2018-02-20")
+    assert last_response.body.include?("2017-01-01</td>")
     # ensure correct error messages are sent after bad edit
     post "/submit_edit/#{@task0.id}", params = {pg_type: "index", description: "",
       categories: "foo, bar, baz", date_due: "2018-02-20"}
@@ -400,10 +398,9 @@ class ToDoTest < Minitest::Test
     @store.delete_forever(@task9.id) if @task9.id
     @store.delete_forever(@task10.id) if @task10.id
     @store.delete_forever(0) # used by test_post_newtask
-    delr = Thread.new do
-      Dir.glob("tmp/*").each {|file| File.delete(file)}
-    end
-    delr.join
+    # delete tmp files made during testing
+    (`ls tmp` || "").split("\n").each {|file| `rm "tmp/#{file}"`}
+    sleep 0.2
   end
 
 end

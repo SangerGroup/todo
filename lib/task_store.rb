@@ -81,15 +81,10 @@ class TaskStore
   end
 
   def get_tmp_id
-    thred = Thread.new do
-      tmp_list = Dir.glob("tmp/*")
-    end
-    thred.join
-    tmp_list = thred.value
+    tmp_list = (`ls tmp` || "")
+    tmp_list = tmp_list.split("\n")
     tmp_list = tmp_list.map do |filename|
-      thrad = Thread.new { File.basename(filename).to_i }
-      thrad.join
-      thrad.value
+      File.basename(filename).to_i
     end
     return 1 if tmp_list.empty?
     return (tmp_list.max + 1)
