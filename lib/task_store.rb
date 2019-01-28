@@ -24,7 +24,8 @@ class TaskStore
 
   def all
     @store.transaction do
-      @store.roots.map { |id| @store[id] }
+      mapped = @store.roots.map { |id| @store[id] } #.sort_by {|id| puts id; @store[id].date_due}
+      mapped.sort_by! {|id| id.date_due.to_time}.reverse
     end # the mapped array is returned by the block and thus by .transaction
   end
 
